@@ -11,7 +11,10 @@ app.use(cors({
     origin: '*'
 }));
 
-app.use(express.json());
+app.use(express.json({
+    limit: '100mb'
+}));
+
 
 const accountsDB = new nedb({
     filename: 'accounts.db',
@@ -28,6 +31,148 @@ const picturesDB = new nedb({
     autoload: true
 });
 
+//Skapa konto
+app.post('/api/signup', async (request, response) => {
+    const credentials = request.body;
+    console.log(credentials);
+    const resObj = {
+        success: true,
+        usernameExists: false,
+        emailExists: false,
+        eventKeyExists: false
+    };
+
+    //kolla igenom db om namn eller email redan finns reggat
+    const usernameExists = await accountsDB.find({
+        username: credentials.username
+    });
+    const emailExists = await accountsDB.find({
+        email: credentials.email
+    });
+    const eventKey = await eventDB.find({
+        eventKey: credentials.eventKey
+    });
+
+    if (usernameExists.length > 0) {
+        resObj.usernameExists = true;
+    }
+    if (emailExists.length > 0) {
+        resObj.emailExists = true;
+    }
+
+    if (resObj.usernameExists || resObj.emailExists) {
+        resObj.success = false;
+    } else {
+        const hashedPassword = await bcryptFunctions.hashPassword(credentials.password);
+        credentials.password = hashedPassword;
+        accountsDB.insert(credentials);
+    }
+
+    if (eventKey.length > 0) {
+        resObj.eventKeyExists = true
+    }
+
+    if (credentials.eventKey && resObj.eventKeyExists === false) {
+        let event = {
+            title: credentials.title,
+            username: credentials.username,
+            eventKey: credentials.eventKey
+        }
+
+        eventDB.insert(event);
+
+    }
+
+
+    response.json(resObj);
+});
+
+
+app.post('/api/login', async (request, response) => {
+    const credentials = request.body;
+
+    const resObj = {
+        username: false,
+        success: false,
+        token: "",
+        eventKeySuccess: false,
+        admin: false
+    };
+
+    // console.log(credentials);
+
+    const account = await accountsDB.find({
+        username: credentials.username
+    });
+
+    const findEvent = await eventDB.find({
+        eventKey: credentials.eventKey
+    });
+
+    if (findEvent.length > 0) {
+        const event = findEvent[0]
+        const keyInput = credentials.eventKey
+        if (event.eventKey === keyInput) {
+            resObj.eventKeySuccess = true
+        }
+        if (event.username === credentials.username) {
+            resObj.admin = true
+        }
+    }
+
+    // console.log("från db", account);
+    if (account.length > 0) {
+
+        resObj.username = true
+
+        const correctPassword = await bcryptFunctions.comparePassword(credentials.password, account[0].password);
+        if (correctPassword) {
+            resObj.success = true;
+
+            const token = jwt.sign({
+                username: account[0].username
+            }, "goodgood", { //vår token blir krypterad med användarens användarnamn som kopplar vår token till användaren
+                expiresIn: 600
+            });
+            resObj.token = token;
+        }
+    }
+
+
+
+    response.json(resObj);
+});
+
+
+app.post('/api/addPicture', async (request, response) => {
+    const credentials = request.body;
+    picturesDB.insert(credentials);
+    response.send(credentials)
+});
+
+
+// app.post('/api/controllKey', async (request, response) => {
+//     const credentials = request.body
+
+//     console.log(credentials.key);
+//     const resObj = {
+//         keyExcists: false
+//     }
+
+//     const findEvent = await eventDB.find({
+//         eventKey: credentials.key
+//     });
+
+//     console.log(findEvent);
+
+
+//     if (findEvent.length > 0) {
+//         resObj.keyExcists = true
+//     }
+
+
+//     response.json(resObj);
+// });
 
 
 
