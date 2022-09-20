@@ -77,7 +77,12 @@ function GuestPage() {
                 "Content-Type": "application/json"
             }
         });
-        const data = await response.json();
+        const data = await response.json()
+        console.log(data);
+        getPictures()
+        setHasPhoto(false)
+        getCamera()
+
     }
 
 
@@ -105,6 +110,7 @@ function GuestPage() {
     }, [])
 
 
+
     const [fullPage, setFullPage] = useState(false)
     const [deleteCheck, setDeleteCheck] = useState(false)
 
@@ -121,11 +127,13 @@ function GuestPage() {
             setPictureSlide(0)
         }
 
-        if (pictureSlide === -1) {
-            setPictureSlide(allPictures.length)
-        }
-
     }, [pictureSlide])
+
+    if (pictureSlide === -1) {
+        setPictureSlide(allPictures.length - 1)
+    }
+
+
 
 
     return (
@@ -151,7 +159,7 @@ function GuestPage() {
 
             {allPictures && !fullPage ?
                 allPictures.map((picture: any, id: number) => (
-                    <article>
+                    <article key={id}>
                         <img className="img" onClick={() => selectPic(picture, id)} src={picture.takenPicture} alt="" />
                     </article>
                 )) : null
@@ -159,7 +167,7 @@ function GuestPage() {
 
 
             {fullPage ? <section>
-                {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null}
+                {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
                 <article>
                     <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button> <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
                 </article>

@@ -54,3 +54,8 @@
   width: 20vh;
   height: 20vh;
 }
+
+
+.result {
+  display: none;
+}
