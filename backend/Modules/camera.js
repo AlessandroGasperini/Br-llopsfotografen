@@ -35,14 +35,35 @@ router.put('/', async (request, response) => {
     response.send(getPictures)
 });
 
+
+
 router.delete('/', async (request, response) => {
+
+    const resObj = {
+        success: false
+    }
+
     const credentials = request.body;
 
-    const getPictures = await picturesDB.find({
+    const getAllPictures = await picturesDB.find({
         user: credentials.user
     });
-    console.log("hehhehhehhhehhhehh", getPictures);
-    // response.send(getPictures)
+
+    const getPicture = await picturesDB.find({
+        _id: credentials.picture
+    });
+
+
+    picturesDB.remove({
+        _id: getPicture[0]._id
+    }, {}, function (err, numRemoved) {
+        if (numRemoved == 1) {
+            resObj.success = true
+        }
+    });
+
+
+    response.send(resObj)
 });
 
 

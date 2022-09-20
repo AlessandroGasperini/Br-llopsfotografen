@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react"
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import DeletePicture from "../Components/DeletePicture";
 
 function GuestPage() {
 
@@ -104,30 +105,14 @@ function GuestPage() {
     }, [])
 
 
-
-    async function deletePicture() {
-
-        let picture = {
-            user: location.state.username
-        }
-
-        const response = await fetch('http://localhost:2500/deletePicture', {
-            method: 'DELETE',
-            body: JSON.stringify(picture),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const data = await response.json();
-    }
-
-
-
+    const [fullPage, setFullPage] = useState(false)
+    const [deleteCheck, setDeleteCheck] = useState(false)
 
 
     function selectPic(picture: any, id: number) {
         setSelectedPicture(picture)
         setPictureSlide(id)
+        setFullPage(true)
     }
 
 
@@ -143,10 +128,10 @@ function GuestPage() {
             <h1>{userData.eventTitle}</h1>
             <p>Gäst</p>
 
-            {photoRef.current != null ? null : <section className="camera">
+            {!hasPhoto ? <section className="camera">
                 <video ref={videoRef} ></video>
                 <button onClick={() => takePic()}>SNAP</button>
-            </section>}
+            </section> : null}
 
 
 
@@ -159,7 +144,7 @@ function GuestPage() {
 
             <button onClick={() => getCamera()}>Öppna Kamera</button>
 
-            {allPictures ?
+            {allPictures && !fullPage ?
                 allPictures.map((picture: any, id: number) => (
                     <article>
                         <img className="img" onClick={() => selectPic(picture, id)} src={picture.takenPicture} alt="" />
@@ -168,8 +153,22 @@ function GuestPage() {
             }
 
 
-            {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null}
-            <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button> <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button><h4>X</h4>
+            {fullPage ? <section>
+                {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null}
+                <article>
+                    <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button> <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
+                </article>
+
+                {pictureOptions ? <article>
+                    <h5>favvo</h5>
+                    <h5 onClick={() => setDeleteCheck(true)}>Radera</h5>
+                </article> : null}
+
+                <h4 onClick={() => setPictureOptions(!pictureOptions)}>...</h4>
+                <h4 onClick={() => setFullPage(false)}>X</h4>
+            </section> : null}
+
+            {deleteCheck && <DeletePicture deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
 
         </section>
     );
