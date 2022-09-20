@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import CreatedAccountModal from "../Components/CreatedAccountModal";
 
 function CreateAccount() {
     const [showPsw, setShowPsw] = useState<boolean>(false)
@@ -14,6 +14,9 @@ function CreateAccount() {
     const [password, setPassword] = useState<string>("")
     const [confirmPassword, setConfirmedPassword] = useState<string>("")
     const [eventKey, setEventKey] = useState<number>()
+
+    const [confirmed, setConfirmed] = useState<Object | any>(false)
+
 
     interface newAccount {
         title?: string
@@ -45,7 +48,7 @@ function CreateAccount() {
 
 
     async function createNewAccount(account: newAccount) {
-        const response = await fetch('http://localhost:2500/api/signup', {
+        const response = await fetch('http://localhost:2500/signup', {
             method: 'POST',
             body: JSON.stringify(account),
             headers: {
@@ -53,7 +56,7 @@ function CreateAccount() {
             }
         });
         const data = await response.json();
-        console.log(data);
+        setConfirmed(data)
     }
 
 
@@ -112,7 +115,7 @@ function CreateAccount() {
                 <input onClick={() => setShowPsw(!showPsw)} type="checkbox" />
                 <button onClick={() => createNewAccount(guestOrAdmin ? adminAccount : guestAccount)}>Skapa konto</button>
             </article>
-
+            {confirmed.success ? <CreatedAccountModal data={guestOrAdmin ? adminAccount : guestAccount} /> : null}
         </section >
     );
 }

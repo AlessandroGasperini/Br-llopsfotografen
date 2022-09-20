@@ -37,3 +37,15 @@
     transform: rotate(360deg);
   }
 }
+
+.modalContainer {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  background-color: #000000ba;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: aliceblue;
+}

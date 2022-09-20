@@ -4,6 +4,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 function GuestPage() {
 
     const location = useLocation()
+    const userData = location.state.data
 
     const photoRef = useRef<any>(null)
     const videoRef = useRef<any>(null)
@@ -43,23 +44,29 @@ function GuestPage() {
         ctx.drawImage(video, 0, 0, width, height)
         setHasPhoto(true)
 
-        let dada = photoRef.current.toDataURL()
-        setTakenPicture(dada)
+        var jpgURL = photoRef.current.toDataURL("image/jpeg");
+        // let dada = photoRef.current.toDataURL()
 
-        console.log(dada);
+        setTakenPicture(jpgURL)
+
+        // console.log(jpgURL);
+
+
+        //closeCamera() ------------????????
 
     }
 
 
 
-    async function addPicture() {
 
+    async function addPicture() {
         let picture = {
             takenPicture: takenPicture,
-            user: location.state
+            user: location.state.username,
+            eventKey: location.state.eventKey
         }
 
-        const response = await fetch('http://localhost:2500/api/addPicture', {
+        const response = await fetch('http://localhost:2500/addPicture', {
             method: 'POST',
             body: JSON.stringify(picture),
             headers: {
@@ -72,15 +79,36 @@ function GuestPage() {
 
 
 
+    const [allPictures, setAllPictures]: any = useState()
+
+    async function dada() {
+        let user = {
+            user: location.state.username
+        }
+        const response = await fetch('http://localhost:2500/pictures', {
+            method: 'PUT',
+            body: JSON.stringify(user),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await response.json();
+        setAllPictures(data)
+    }
+
+
+    console.log(allPictures);
+
+
     return (
         <section>
-            <h1>Gäääst</h1>
+            <h1>{userData.eventTitle}</h1>
+            <p>Gäst</p>
 
-
-            <section className="camera">
+            {photoRef.current != null ? null : <section className="camera">
                 <video ref={videoRef} ></video>
                 <button onClick={() => takePic()}>SNAP</button>
-            </section>
+            </section>}
 
 
 
@@ -92,6 +120,12 @@ function GuestPage() {
             <button onClick={() => addPicture()}>Lägg till bild</button>
 
             <button onClick={() => getCamera()}>Öppna Kamera</button>
+            <button onClick={() => dada()} >dada</button>
+
+            {allPictures ?
+                allPictures.map((picture: any, id: number) => (
+                    <img src={picture.takenPicture} alt="" />
+                )) : null}
 
         </section>
     );

@@ -4,9 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
     const navigate = useNavigate()
 
-    const [validUserName, setValidUsername] = useState<any>(true)
-    // const [validPassword, setValidPassowrd] = useState<boolean>(true)
-    // const [validKey, setValidKey] = useState<boolean>(true)
+    const [eventData, setEventData] = useState<any>(true)
+
 
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [username, setUsername] = useState<string>("")
@@ -26,8 +25,8 @@ function Login() {
     }
 
     async function login(logIn: loginInterface) {
-        const response = await fetch('http://localhost:2500/api/login', {
-            method: 'POST',
+        const response = await fetch('http://localhost:2500/login', {
+            method: 'PUT',
             body: JSON.stringify(logIn),
             headers: {
                 'Content-Type': 'application/json'
@@ -36,12 +35,12 @@ function Login() {
         const data = await response.json();
         console.log(data);
 
-        setValidUsername(data)
+        setEventData(data)
 
         if (data.success && data.eventKeySuccess && !data.admin) {
-            navigate("/Guest", { state: { username } })
+            navigate("/Guest", { state: { data, eventKey, username } })
         } else if (data.success && data.eventKeySuccess && data.admin) {
-            navigate("/Admin")
+            navigate("/Admin", { state: { data, eventKey, username } })
 
         }
 
@@ -63,9 +62,9 @@ function Login() {
                 <button onClick={() => login(logIn)}>Logga in</button>
 
 
-                {validUserName.username === false ? <p>Användarnamnet finns ej</p> : null}
-                {validUserName.success === false && validUserName.username === true ? <p>Lösenordet är fel</p> : null}
-                {validUserName.success === true && validUserName.username === true && validUserName.eventKeySuccess === false ? <p>Eventet finns inte</p> : null}
+                {eventData.username === false ? <p>Användarnamnet finns ej</p> : null}
+                {eventData.success === false && eventData.username === true ? <p>Lösenordet är fel</p> : null}
+                {eventData.success === true && eventData.username === true && eventData.eventKeySuccess === false ? <p>Eventet finns inte</p> : null}
 
                 <Link to={"/CreateAccount"} onClick={() => login(logIn)}>Skapa konto</Link>
             </article>
