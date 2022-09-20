@@ -120,6 +120,11 @@ function GuestPage() {
         if (pictureSlide === allPictures.length) {
             setPictureSlide(0)
         }
+
+        if (pictureSlide === -1) {
+            setPictureSlide(allPictures.length)
+        }
+
     }, [pictureSlide])
 
 
