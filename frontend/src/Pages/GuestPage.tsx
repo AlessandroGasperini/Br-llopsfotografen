@@ -15,6 +15,11 @@ function GuestPage() {
     const [selectedPicture, setSelectedPicture] = useState<any>()
     const [pictureOptions, setPictureOptions] = useState<boolean>(false)
     const [pictureSlide, setPictureSlide] = useState<number>(0)
+    const [openCloseCam, setOpenCloseCam] = useState<boolean>(true)
+
+    function closeCamera() {
+        setOpenCloseCam(false)
+    }
 
 
     function getCamera() {
@@ -23,16 +28,33 @@ function GuestPage() {
         })
             .then(stream => {
                 let video = videoRef.current
+                if (openCloseCam) {
+                    video.srcObject = stream
+                    video.play()
+                } else {
+                    let tracks = stream.getTracks();
+                    // now close each track by having forEach loop
+                    tracks.forEach(function (track) {
+                        // stopping every track
+                        track.stop();
+                        video.srcObject = null;
 
-                video.srcObject = stream
-                video.play()
+                        // vi var här!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        setOpenCloseCam(true)
+                        // window.location.reload()
+                    });
+                }
             }).catch(err => {
                 console.error(err)
 
             })
+
     }
 
-
+    if (!openCloseCam) {
+        getCamera()
+    }
+    console.log(openCloseCam);
 
     function takePic() {
         const width = 414
@@ -135,7 +157,6 @@ function GuestPage() {
 
 
 
-
     return (
         <section>
             <h1>{userData.eventTitle}</h1>
@@ -146,7 +167,7 @@ function GuestPage() {
                 <button onClick={() => takePic()}>SNAP</button>
             </section> : null}
 
-
+            <button onClick={() => closeCamera()}>stäng kamera</button>
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
                 <canvas ref={photoRef} ></canvas>

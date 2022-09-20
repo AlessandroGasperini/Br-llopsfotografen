@@ -109,7 +109,7 @@ function CreateAccount() {
 
                 <input onChange={(e) => setPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Lösenord" />
                 <input onChange={(e) => setConfirmedPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Upprepa löseord" />
-
+                {guestOrAdmin && <input type="color" />}
                 <h5>{eventKey}</h5>
                 {guestOrAdmin && <button onClick={() => createKey()}>Ge mig en kod</button>}
                 <input onClick={() => setShowPsw(!showPsw)} type="checkbox" />
