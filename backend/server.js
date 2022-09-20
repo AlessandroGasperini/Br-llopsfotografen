@@ -22,6 +22,7 @@ app.use("/login", account)
 app.use("/signup", account)
 app.use("/addPicture", camera)
 app.use("/pictures", camera)
+app.use("/deletePicture", camera)
 
 
 

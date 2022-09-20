@@ -49,3 +49,8 @@
   justify-content: center;
   color: aliceblue;
 }
+
+.img {
+  width: 20vh;
+  height: 20vh;
+}

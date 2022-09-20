@@ -35,6 +35,16 @@ router.put('/', async (request, response) => {
     response.send(getPictures)
 });
 
+router.delete('/', async (request, response) => {
+    const credentials = request.body;
+
+    const getPictures = await picturesDB.find({
+        user: credentials.user
+    });
+    console.log("hehhehhehhhehhhehh", getPictures);
+    // response.send(getPictures)
+});
+
 
 
 module.exports = router
