@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreatedAccountModal from "../Components/CreatedAccountModal";
 
 function CreateAccount() {
@@ -65,36 +65,30 @@ function CreateAccount() {
 
     }
 
-    // const [tryKey, setTryKey] = useState<boolean>()
-
-    // async function createKey() {
-    //     // let key = Math.floor(Math.random() * 90000) + 10000;
-
-    //     let kekek = Math.floor(Math.random() * 5) + 1;
-
-    //     const response = await fetch('http://localhost:2500/api/controllKey', {
-    //         method: 'POST',
-    //         body: JSON.stringify({ kekek }),
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         }
-    //     });
-    //     const data = await response.json();
-    //     setEventKey(kekek)
-    //     setTryKey(data.keyExcists)
-    // }
-    // console.log(tryKey);
+    const [showBtn, setShowBtn] = useState(false)
 
 
-    // if (tryKey === true) {
-    //     // createKey()
-    //     console.log("ni gör vi en ny nyckel");
+    useEffect(() => {
+        if (firstName !== "" && lastName !== "" && username !== "" && email !== "" && password !== "" && password === confirmPassword) {
+            if (!guestOrAdmin) {
+                setShowBtn(true)
 
-    // }
+            } else if (guestOrAdmin && title !== "") {
+                setShowBtn(true)
+            }
+        } else {
+            setShowBtn(false)
+        }
+        if (!guestOrAdmin) {
+            setTitle("")
+        }
 
+        if (guestOrAdmin && title === "") {
+            setShowBtn(false)
+        }
+    })
 
-
-
+    console.log(showBtn);
 
     return (
         <section>
@@ -113,7 +107,7 @@ function CreateAccount() {
                 <h5>{eventKey}</h5>
                 {guestOrAdmin && <button onClick={() => createKey()}>Ge mig en kod</button>}
                 <input onClick={() => setShowPsw(!showPsw)} type="checkbox" />
-                <button onClick={() => createNewAccount(guestOrAdmin ? adminAccount : guestAccount)}>Skapa konto</button>
+                {showBtn && <button onClick={() => createNewAccount(guestOrAdmin ? adminAccount : guestAccount)}>Skapa konto</button>}
             </article>
             {confirmed.success ? <CreatedAccountModal data={guestOrAdmin ? adminAccount : guestAccount} /> : null}
         </section >
