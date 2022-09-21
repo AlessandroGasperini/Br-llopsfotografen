@@ -16,10 +16,6 @@ const eventDB = new nedb({
     autoload: true
 });
 
-// const picturesDB = new nedb({
-//     filename: 'pictures.db',
-//     autoload: true
-// });
 
 const bcryptFunctions = require('../bcrypt');
 
@@ -27,7 +23,7 @@ const bcryptFunctions = require('../bcrypt');
 //Skapa konto
 router.post('/', async (request, response) => {
     const credentials = request.body;
-    console.log(credentials);
+
     const resObj = {
         success: true,
         usernameExists: false,
@@ -73,9 +69,7 @@ router.post('/', async (request, response) => {
         }
 
         eventDB.insert(event);
-
     }
-
 
     response.json(resObj);
 });
@@ -90,19 +84,19 @@ router.put('/', async (request, response) => {
         token: "",
         eventKeySuccess: false,
         admin: false,
-        eventTitle: ""
+        eventTitle: "",
+        name: ""
     };
 
     const account = await accountsDB.find({
         username: credentials.username
     });
-    console.log("account", account);
+    resObj.name = account[0].firstName
 
     const findEvent = await eventDB.find({
         eventKey: credentials.eventKey
     });
 
-    console.log(findEvent);
 
     if (findEvent.length > 0) {
         const event = findEvent[0]
@@ -118,7 +112,6 @@ router.put('/', async (request, response) => {
         }
     }
 
-    // console.log("från db", account);
     if (account.length > 0) {
 
         resObj.username = true

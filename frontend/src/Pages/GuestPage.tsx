@@ -6,6 +6,7 @@ function GuestPage() {
 
     const location = useLocation()
     const userData = location.state.data
+    console.log(userData);
 
     const photoRef = useRef<any>(null)
     const videoRef = useRef<any>(null)
@@ -150,14 +151,33 @@ function GuestPage() {
         setPictureSlide(allPictures.length - 1)
     }
 
+    async function addToFavourites(picture: any) {
+        let pictureData = {
+            takenPicture: picture,
+            user: location.state.username,
+            eventKey: location.state.eventKey
+        }
+
+        const response = await fetch('http://localhost:2500/addToFavourites', {
+            method: 'POST',
+            body: JSON.stringify(pictureData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const data = await response.json();
+
+    }
+
 
 
     return (
         <section>
             <h1>{userData.eventTitle}</h1>
-            <p>Gäst</p>
+            <p>{userData.name}</p>
+            <Link state={userData} to={"/Favourites"}>Favoriter</Link>
 
-            {!hasPhoto ? <section className="camera">
+            {!hasPhoto && closeCam ? <section className="camera">
                 <video ref={videoRef} ></video>
                 {closeCam && <button onClick={() => takePic()}>SNAP</button>}
             </section> : null}
@@ -172,6 +192,7 @@ function GuestPage() {
 
             <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>
 
+            <h4>Dina bilder</h4>
             {allPictures && !fullPage ?
                 allPictures.map((picture: any, id: number) => (
                     <article key={id}>
@@ -188,7 +209,7 @@ function GuestPage() {
                 </article>}
 
                 {pictureOptions ? <article>
-                    <h5>favvo</h5>
+                    <h5 onClick={() => addToFavourites(allPictures[pictureSlide])}>favvo</h5>
                     <h5 onClick={() => setDeleteCheck(true)}>Radera</h5>
                 </article> : null}
 
