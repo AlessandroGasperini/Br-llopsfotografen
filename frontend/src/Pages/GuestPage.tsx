@@ -12,7 +12,6 @@ function GuestPage() {
     const [hasPhoto, setHasPhoto] = useState<boolean>(false)
 
     const [takenPicture, setTakenPicture] = useState<string>("")
-    const [selectedPicture, setSelectedPicture] = useState<any>()
     const [pictureOptions, setPictureOptions] = useState<boolean>(false)
     const [pictureSlide, setPictureSlide] = useState<number>(0)
     const [openCloseCam, setOpenCloseCam] = useState<boolean>(true)
@@ -71,15 +70,8 @@ function GuestPage() {
         setHasPhoto(true)
 
         var jpgURL = photoRef.current.toDataURL("image/jpeg");
-        // let dada = photoRef.current.toDataURL()
 
         setTakenPicture(jpgURL)
-
-        // console.log(jpgURL);
-
-
-        //closeCamera() ------------????????
-
     }
 
 
@@ -111,6 +103,8 @@ function GuestPage() {
 
 
     const [allPictures, setAllPictures]: any = useState([])
+    console.log(allPictures);
+
 
     async function getPictures() {
         let user = {
@@ -138,7 +132,6 @@ function GuestPage() {
 
 
     function selectPic(picture: any, id: number) {
-        setSelectedPicture(picture)
         setPictureSlide(id)
         setFullPage(true)
     }

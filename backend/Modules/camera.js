@@ -3,15 +3,6 @@ const nedb = require('nedb-promise');
 
 const router = express.Router()
 
-// const accountsDB = new nedb({
-//     filename: 'accounts.db',
-//     autoload: true
-// });
-
-// const eventDB = new nedb({
-//     filename: 'event.db',
-//     autoload: true
-// });
 
 const picturesDB = new nedb({
     filename: 'pictures.db',
@@ -38,32 +29,23 @@ router.put('/', async (request, response) => {
 
 
 router.delete('/', async (request, response) => {
-
-    const resObj = {
-        success: false
-    }
-
     const credentials = request.body;
-
-    const getAllPictures = await picturesDB.find({
-        user: credentials.user
-    });
 
     const getPicture = await picturesDB.find({
         _id: credentials.picture
     });
 
-
-    picturesDB.remove({
+    const removePic = await picturesDB.remove({
         _id: getPicture[0]._id
     }, {}, function (err, numRemoved) {
-        if (numRemoved == 1) {
-            resObj.success = true
-        }
+
     });
 
+    const getAllPictures = await picturesDB.find({
+        user: credentials.user
+    });
 
-    response.send(resObj)
+    response.send(getAllPictures)
 });
 
 
