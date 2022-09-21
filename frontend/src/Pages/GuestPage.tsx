@@ -102,8 +102,6 @@ function GuestPage() {
     }
 
 
-
-
     const [allPictures, setAllPictures]: any = useState([])
     console.log(allPictures);
 
@@ -152,16 +150,20 @@ function GuestPage() {
 
 
 
+
+
+
     return (
         <section>
             <h1>{userData.eventTitle}</h1>
             <p>Gäst</p>
 
+
             {!hasPhoto ? <section className="camera">
                 <video ref={videoRef} ></video>
                 {closeCam && <button onClick={() => takePic()}>SNAP</button>}
-            </section> : null}
 
+            </section> : null}
 
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
@@ -169,6 +171,12 @@ function GuestPage() {
             </section>
 
             {takenPicture && <button onClick={() => addPicture()}>Lägg till bild</button>}
+
+            {hasPhoto && <button onClick={() => {
+                setHasPhoto(false)
+                getCamera()
+
+            }}>fan va ful ta ny</button>}
 
             <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>
 
@@ -196,7 +204,7 @@ function GuestPage() {
                 <h4 onClick={() => setFullPage(false)}>X</h4>
             </section> : null}
 
-            {deleteCheck && <DeletePicture deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
+            {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
 
         </section>
     );

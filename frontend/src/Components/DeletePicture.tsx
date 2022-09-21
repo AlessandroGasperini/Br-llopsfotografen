@@ -28,7 +28,8 @@ function DeletePicture(props: any) {
         <section className="modalContainer">
             <img src={pictureData.takenPicture} alt="" />
             <h1>ÄR DU SÄKER ATT DU VILL REDERA?</h1>
-            <button onClick={() => deletePicture()}>RADERA</button> <button>ÅNGRA</button>
+            <button onClick={() => deletePicture()}>RADERA</button>
+            <button onClick={() => (props.closeModal(false))}>ÅNGRA</button>
 
         </section>
     );
