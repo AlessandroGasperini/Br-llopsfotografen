@@ -35,17 +35,14 @@ router.delete('/', async (request, response) => {
         _id: credentials.picture
     });
 
+    response.json(getPicture[0]._id)
+
     const removePic = await picturesDB.remove({
         _id: getPicture[0]._id
-    }, {}, function (err, numRemoved) {
+    }, {}, function (err, numRemoved) {});
 
-    });
+    response.json(removePic)
 
-    const getAllPictures = await picturesDB.find({
-        user: credentials.user
-    });
-
-    response.send(getAllPictures)
 });
 
 

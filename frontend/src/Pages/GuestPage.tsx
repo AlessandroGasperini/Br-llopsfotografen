@@ -15,9 +15,12 @@ function GuestPage() {
     const [pictureOptions, setPictureOptions] = useState<boolean>(false)
     const [pictureSlide, setPictureSlide] = useState<number>(0)
     const [openCloseCam, setOpenCloseCam] = useState<boolean>(true)
+    const [closeCam, setCloseCam] = useState<boolean>(false)
+
 
     function closeCamera() {
         setOpenCloseCam(false)
+        window.location.reload()
     }
 
 
@@ -47,13 +50,12 @@ function GuestPage() {
                 console.error(err)
 
             })
-
+        setCloseCam(true)
     }
 
     if (!openCloseCam) {
         getCamera()
     }
-    console.log(openCloseCam);
 
     function takePic() {
         const width = 414
@@ -131,7 +133,7 @@ function GuestPage() {
     const [deleteCheck, setDeleteCheck] = useState(false)
 
 
-    function selectPic(picture: any, id: number) {
+    function selectPic(id: number) {
         setPictureSlide(id)
         setFullPage(true)
     }
@@ -157,34 +159,33 @@ function GuestPage() {
 
             {!hasPhoto ? <section className="camera">
                 <video ref={videoRef} ></video>
-                <button onClick={() => takePic()}>SNAP</button>
+                {closeCam && <button onClick={() => takePic()}>SNAP</button>}
             </section> : null}
 
-            <button onClick={() => closeCamera()}>stäng kamera</button>
+
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
                 <canvas ref={photoRef} ></canvas>
-                <button>CLOSE</button>
             </section>
 
-            <button onClick={() => addPicture()}>Lägg till bild</button>
+            {takenPicture && <button onClick={() => addPicture()}>Lägg till bild</button>}
 
-            <button onClick={() => getCamera()}>Öppna Kamera</button>
+            <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>
 
             {allPictures && !fullPage ?
                 allPictures.map((picture: any, id: number) => (
                     <article key={id}>
-                        <img className="img" onClick={() => selectPic(picture, id)} src={picture.takenPicture} alt="" />
+                        <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
                     </article>
                 )) : null
             }
 
-
             {fullPage ? <section>
                 {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
-                <article>
-                    <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button> <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
-                </article>
+                {allPictures.length == 1 ? null : <article>
+                    <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button>
+                    <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
+                </article>}
 
                 {pictureOptions ? <article>
                     <h5>favvo</h5>
