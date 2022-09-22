@@ -1,5 +1,5 @@
 export type UserData = {
-  userName: string,
+  user: string,
 }
 
 export type Pictures = {

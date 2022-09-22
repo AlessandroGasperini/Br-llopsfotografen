@@ -5,6 +5,7 @@ function DeletePicture(props: any) {
     const closeModalFunc = props.closeModal
 
     async function deletePicture() {
+        window.location.reload()
         // Raderar från alla bilder (picturesDB)
         let picture = {
             user: pictureData.user,
@@ -19,7 +20,10 @@ function DeletePicture(props: any) {
                 "Content-Type": "application/json"
             }
         });
+
+
         const data = await response.json();
+
     }
 
     return (
@@ -28,7 +32,6 @@ function DeletePicture(props: any) {
             <h1>ÄR DU SÄKER ATT DU VILL REDERA?</h1>
             <button onClick={() => deletePicture()}>RADERA</button>
             <button onClick={() => closeModalFunc(false)}>ÅNGRA</button>
-
         </section>
     );
 }

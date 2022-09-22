@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react"
 import { useNavigate, useLocation, Link, useSearchParams } from "react-router-dom";
+import DeleteAccountModal from "../Components/DeleteAccountModal";
 
 function AdminPage() {
 
@@ -8,23 +9,9 @@ function AdminPage() {
     const user = location.state
 
     const [ableDelete, setAbleDelete] = useState(false)
+    const [closeModal, setCloseModal] = useState<boolean>(false)
 
 
-    async function deleteAccount() {
-        let event = {
-            eventKey: user.eventKey
-        }
-
-        const response = await fetch('http://localhost:2500/deleteAccount', {
-            method: 'DELETE',
-            body: JSON.stringify(event),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const data = await response.json();
-
-    }
 
 
     async function isLoggedIn() {
@@ -52,8 +39,12 @@ function AdminPage() {
             <h1>{user.data.eventTitle}</h1>
             <h4>{user.data.name}</h4>
             <button onClick={() => setAbleDelete(!ableDelete)}> ...</button>
-            {ableDelete && <h4 onClick={() => deleteAccount()}>RADERA KONTO</h4>}
-            <p>Admin Page</p>
+            {ableDelete && <h4 onClick={() => setCloseModal(true)}>RADERA KONTO</h4>}
+
+
+
+            {closeModal && <DeleteAccountModal closeModal={setCloseModal} userInfo={user.username} />}
+
         </section>
     );
 }

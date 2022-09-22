@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Gruppo&display=swap');
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 60vh;
+}
+
+h1 {
+    font-family: 'Gruppo', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 4px;
+}
+
+.hamburger {
+    width: 5vh;
+}
+
+.logo {
+    width: 3vh;
+}
+
+.inProgress {
+    display: flex;
+    justify-content: start;
+    height: 5vh;
+}
+
+.inProgress img {
+    width: 5vh;
+}
+
+body {
+    /* background-color: #191919; */
+    display: flex;
+    justify-content: center;
+}
+
+.inputs article {
+    margin: 3vh;
+}
+
+input {
+    width: 63vw;
+    height: 6vh;
+    text-align: center;
+    font-size: 1rem;
+    background-color: #FCFBF7;
+}
+
+button {
+    width: 30vw;
+    height: 6vh;
+    font-size: 1.2rem;
+    border-radius: 4px;
+}
+
+/* .btnAndPswContainer {} */
+
+.btnAndPswContainer img {
+    width: 5vh;
+}

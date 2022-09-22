@@ -1,30 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import styles from "./Login.module.css"
+import hidePswImg from "../assets/hidePsw.png"
+import showPswImg from "../assets/showPsw.png"
+import hamburger from "../assets/hamburger.png"
+import logo from "../assets/logo.png"
+import inProgress from "../assets/inProgress.png"
+import { LoginInterface, EventData } from "../typesAndInterfaces/interfaces"
+
 
 function Login() {
     const navigate = useNavigate()
 
-    const [eventData, setEventData] = useState<any>(true)
+    const [eventData, setEventData] = useState<EventData | any>(false) // any????????? inte satt än
 
 
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [eventKey, setEventKey] = useState<number>(0)
+    const [inProgressImg, setInProgressImg] = useState<boolean>(false)
 
-    interface loginInterface {
-        username: string
-        password: string
-        eventKey: number
-    }
-
-    let logIn: loginInterface = {
+    let logIn: LoginInterface = {
         username: username,
         password: password,
         eventKey: eventKey
     }
 
-    async function login(logIn: loginInterface) {
+    async function login(logIn: LoginInterface): Promise<void> {
         const response = await fetch('http://localhost:2500/login', {
             method: 'PUT',
             body: JSON.stringify(logIn),
@@ -32,9 +35,7 @@ function Login() {
                 'Content-Type': 'application/json'
             }
         });
-        const data = await response.json();
-        console.log(data);
-
+        const data: EventData = await response.json();
         setEventData(data)
 
         if (data.success && data.eventKeySuccess && !data.admin) {
@@ -43,23 +44,39 @@ function Login() {
             navigate("/Admin", { state: { data, eventKey, username } })
 
         }
-
     }
 
 
-
-
-
     return (
-        <section>
-            <h1>Login</h1>
+        <section className={styles.container}>
+            <header>
+                <img onClick={() => setInProgressImg(!inProgressImg)} className={styles.hamburger} src={hamburger} alt="" />
+                <h1>P h y l l o g r a p h e n</h1>
+                <img className={styles.logo} src={logo} alt="" />
+            </header>
 
-            <article>
-                <input onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Användarnamn" />
-                <input onChange={(e) => setPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Lösenord" />
-                <input onChange={(e) => setEventKey(parseInt(e.target.value))} type="text" placeholder="Event-kod" />
-                <input onClick={() => setShowPsw(!showPsw)} type="checkbox" />
-                <button onClick={() => login(logIn)}>Logga in</button>
+            <section className={styles.inProgress}>
+                {inProgressImg && <img src={inProgress} alt="" />}
+            </section>
+
+
+            <article className={styles.inputs}>
+                <article>
+                    <input onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Användarnamn" />
+                </article>
+
+                <article>
+                    <input onChange={(e) => setPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Lösenord" />
+                </article>
+
+                <article>
+                    <input onChange={(e) => setEventKey(parseInt(e.target.value))} type="text" placeholder="Event-kod" />
+                </article>
+
+                <article className={styles.btnAndPswContainer}>
+                    <button onClick={() => login(logIn)}>Logga in</button>
+                    <img onClick={() => setShowPsw(!showPsw)} src={showPsw ? hidePswImg : showPswImg} alt="" />
+                </article>
 
 
                 {eventData.username === false ? <p>Användarnamnet finns ej</p> : null}

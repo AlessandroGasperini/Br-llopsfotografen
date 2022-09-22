@@ -26,26 +26,34 @@ router.put('/', async (request, response) => {
     const getPictures = await picturesDB.find({
         user: credentials.user
     });
+
     response.send(getPictures)
 });
 
 
 // Tar bort en bild
+// router.delete('/', async (request, response) => {
+//     const credentials = request.body;
+
+//     const removePic = await picturesDB.remove({
+//         _id: credentials.picture
+//     }, {}, function (err, numRemoved) {});
+
+// });
+
 router.delete('/', async (request, response) => {
     const credentials = request.body;
 
-    const getPicture = await picturesDB.find({
-        _id: credentials.picture
-    });
+    console.log(credentials.userInfo);
 
 
     const removePic = await picturesDB.remove({
-        _id: getPicture[0]._id
+        _id: credentials.userInfo
     }, {}, function (err, numRemoved) {});
 
-    response.json(removePic)
-});
+    response.json(credentials)
 
+});
 
 
 

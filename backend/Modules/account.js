@@ -1,6 +1,5 @@
 const express = require('express');
 const nedb = require('nedb-promise');
-const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router()
@@ -79,7 +78,7 @@ router.put('/', async (request, response) => {
     const credentials = request.body;
 
     const resObj = {
-        username: false,
+        usernameBool: false,
         success: false,
         token: "",
         eventKeySuccess: false,
@@ -100,7 +99,6 @@ router.put('/', async (request, response) => {
     if (findEvent.length > 0) {
         const event = findEvent[0]
         resObj.eventTitle = event.title
-        resObj.name = account[0].firstName
         const keyInput = credentials.eventKey
         if (event.eventKey === keyInput) {
             resObj.eventKeySuccess = true
@@ -114,6 +112,7 @@ router.put('/', async (request, response) => {
     if (account.length > 0) {
 
         resObj.username = true
+        resObj.name = account[0].firstName
 
         const correctPassword = await bcryptFunctions.comparePassword(credentials.password, account[0].password);
         if (correctPassword) {
@@ -143,16 +142,40 @@ router.get('/', async (request, response) => {
     try {
         //jämför vår token mot den satta
         const data = jwt.verify(token, 'goodgood');
-
         if (data) {
             resObj.loggedIn = true;
         }
     } catch (error) {
         resObj.errorMessage = 'Token expired';
     }
-
     response.json(resObj);
 });
+
+
+router.delete('/', async (request, response) => {
+    let credentials = request.body
+
+    deleteEvent(credentials.userInfo)
+    const deleteAccount = await accountsDB.remove({
+        username: credentials.userInfo
+    }, {}, function (err, numRemoved) {});
+
+    resObj = {
+        success: false
+    }
+    if (deleteAccount.length > 0) {
+        resObj.success = true
+    }
+
+    response.json(resObj)
+});
+
+function deleteEvent(user) {
+    const deleteEvent = eventDB.remove({
+        username: user
+    }, {}, function (err, numRemoved) {});
+}
+
 
 
 
