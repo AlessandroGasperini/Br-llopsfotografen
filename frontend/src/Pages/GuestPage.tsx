@@ -8,7 +8,6 @@ function GuestPage() {
     const navigate = useNavigate()
     const location = useLocation()
     const userData = location.state.data
-    console.log("gusest", location.state);
 
     const photoRef = useRef<any>(null)
     const videoRef = useRef<any>(null)
@@ -104,8 +103,6 @@ function GuestPage() {
     }
 
 
-
-
     const [allPictures, setAllPictures]: any = useState([])
     console.log(allPictures);
 
@@ -175,20 +172,25 @@ function GuestPage() {
 
 
 
+
     return (
         <section>
             <h1>{userData.eventTitle}</h1>
             <p>{userData.name}</p>
 
-            {!hasPhoto && closeCam ? <section className="camera">
-                <video ref={videoRef} ></video>
-                {closeCam && <button onClick={() => takePic()}>SNAP</button>}
-            </section> : null}
 
-            {hasPhoto && <button onClick={() => {
-                setHasPhoto(false)
-                getCamera()
-            }}>Ta ny bild</button>}
+            {
+                !hasPhoto ? <section className="camera">
+                    <video ref={videoRef} ></video>
+                    {closeCam && <button onClick={() => takePic()}>SNAP</button>}
+
+                    {
+                        hasPhoto && <button onClick={() => {
+                            setHasPhoto(false)
+                            getCamera()
+                        }}>Ta ny bild</button>
+                    }
+                </section> : null}
 
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
@@ -199,33 +201,56 @@ function GuestPage() {
 
             {!hasPhoto && <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>}
 
+            {hasPhoto && <button onClick={() => {
+                setHasPhoto(false)
+                getCamera()
 
-            {!closeCam && <section>
+            }}>fan va ful ta ny</button>}
 
-                <h4>Dina bilder</h4>
-                {allPictures && !fullPage ?
-                    allPictures.map((picture: any, id: number) => (
-                        <article key={id}>
-                            <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
-                        </article>
-                    )) : null
-                }
+            <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>
 
-                {fullPage ? <section>
-                    {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
-                    {allPictures.length == 1 ? null : <article>
-                        <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button>
-                        <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
-                    </article>}
+            {allPictures && !fullPage ?
+                allPictures.map((picture: any, id: number) => (
+                    <article key={id}>
+                        <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
+                    </article>
+                )) : null
+            }
 
-                    <img className="trashCan" onClick={() => setDeleteCheck(true)} src={trashCan} alt="" />
+            {
+                !closeCam && <section>
 
-                    <h4 onClick={() => setFullPage(false)}>X</h4>
-                </section> : null}
+                    <h4>Dina bilder</h4>
+                    {
+                        allPictures && !fullPage ?
+                            allPictures.map((picture: any, id: number) => (
+                                <article key={id}>
+                                    <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
+                                </article>
+                            )) : null
+                    }
 
-                {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
-            </section>}
-        </section>
+                    <h5 onClick={() => setDeleteCheck(true)}>Radera</h5>
+
+
+                    {
+                        fullPage ? <section>
+                            {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
+                            {allPictures.length == 1 ? null : <article>
+                                <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button>
+                                <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
+                            </article>}
+
+                            <img className="trashCan" onClick={() => setDeleteCheck(true)} src={trashCan} alt="" />
+                            {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
+
+                            <h4 onClick={() => setFullPage(false)}>X</h4>
+                        </section> : null
+                    }
+
+                    {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
+                </section >}
+        </section >
     );
 }
 
