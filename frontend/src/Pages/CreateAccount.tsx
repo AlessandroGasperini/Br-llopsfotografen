@@ -5,7 +5,6 @@ function CreateAccount() {
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [guestOrAdmin, setGuestOrAdmin] = useState<boolean>(false)
 
-
     const [title, setTitle] = useState<string>("")
     const [firstName, setFirstName] = useState<string>("")
     const [lastName, setLastName] = useState<string>("")
@@ -16,7 +15,6 @@ function CreateAccount() {
     const [eventKey, setEventKey] = useState<number>()
 
     const [confirmed, setConfirmed] = useState<Object | any>(false)
-
 
     interface newAccount {
         title?: string
@@ -56,6 +54,7 @@ function CreateAccount() {
             }
         });
         const data = await response.json();
+
         setConfirmed(data)
     }
 
@@ -73,7 +72,7 @@ function CreateAccount() {
             if (!guestOrAdmin) {
                 setShowBtn(true)
 
-            } else if (guestOrAdmin && title !== "") {
+            } else if (guestOrAdmin && title !== "" && eventKey != null) {
                 setShowBtn(true)
             }
         } else {
@@ -88,10 +87,11 @@ function CreateAccount() {
         }
     })
 
-    console.log(showBtn);
 
     return (
         <section>
+
+            <h1>{guestOrAdmin ? "Skapa eventkonto" : "Skapa konto för att delta i event"}</h1>
 
             <button onClick={() => setGuestOrAdmin(false)}>GUEST</button> <button onClick={() => setGuestOrAdmin(true)}>ADMIN</button>
             <article>

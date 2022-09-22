@@ -4,7 +4,6 @@ import Login from './Pages/Login';
 import CreateAccount from './Pages/CreateAccount';
 import GuestPage from './Pages/GuestPage';
 import AdminPage from './Pages/AdminPage';
-import MyFavourites from './Pages/MyFavourites';
 
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
             <Route path="/CreateAccount" element={<CreateAccount />} />
             <Route path="/Guest" element={<GuestPage />} />
             <Route path="/Admin" element={<AdminPage />} />
-            <Route path="/Favourites" element={<MyFavourites />} />
 
           </Routes>
         </main>

@@ -66,7 +66,7 @@ function Login() {
                 {eventData.success === false && eventData.username === true ? <p>Lösenordet är fel</p> : null}
                 {eventData.success === true && eventData.username === true && eventData.eventKeySuccess === false ? <p>Eventet finns inte</p> : null}
 
-                <Link to={"/CreateAccount"} onClick={() => login(logIn)}>Skapa konto</Link>
+                <Link to={"/CreateAccount"}>Skapa konto</Link>
             </article>
         </section>
     );

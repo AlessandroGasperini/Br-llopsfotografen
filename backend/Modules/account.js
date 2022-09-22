@@ -91,7 +91,6 @@ router.put('/', async (request, response) => {
     const account = await accountsDB.find({
         username: credentials.username
     });
-    resObj.name = account[0].firstName
 
     const findEvent = await eventDB.find({
         eventKey: credentials.eventKey
@@ -101,7 +100,7 @@ router.put('/', async (request, response) => {
     if (findEvent.length > 0) {
         const event = findEvent[0]
         resObj.eventTitle = event.title
-
+        resObj.name = account[0].firstName
         const keyInput = credentials.eventKey
         if (event.eventKey === keyInput) {
             resObj.eventKeySuccess = true
@@ -129,7 +128,28 @@ router.put('/', async (request, response) => {
         }
     }
 
+    response.json(resObj);
+});
 
+
+//kolla om användaren är inloggad
+router.get('/', async (request, response) => {
+    let resObj = {
+        loggedIn: false
+    };
+
+    const token = request.headers.authorization.replace('Bearer ', '');
+
+    try {
+        //jämför vår token mot den satta
+        const data = jwt.verify(token, 'goodgood');
+
+        if (data) {
+            resObj.loggedIn = true;
+        }
+    } catch (error) {
+        resObj.errorMessage = 'Token expired';
+    }
 
     response.json(resObj);
 });

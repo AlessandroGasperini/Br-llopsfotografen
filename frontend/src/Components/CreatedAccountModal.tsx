@@ -7,7 +7,6 @@ function CreatedAccountModal(props: any) {
     const info = props.data
 
 
-
     return (
         <section className="modalContainer">
             Välkommen {info.firstName}

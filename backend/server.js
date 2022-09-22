@@ -18,13 +18,14 @@ app.use(express.json({
 const account = require("./Modules/account")
 const camera = require("./Modules/camera")
 
+
 app.use("/login", account)
 app.use("/signup", account)
+app.use("/loggedIn", account)
+
 app.use("/addPicture", camera)
 app.use("/pictures", camera)
 app.use("/deletePicture", camera)
-app.use("/addToFavourites", camera)
-
 
 
 

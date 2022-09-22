@@ -1,19 +1,20 @@
 import { useRef, useState, useEffect } from "react"
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import DeletePicture from "../Components/DeletePicture";
+import DeletePicture from "../Components/DeletePictureModal";
+import trashCan from "../assets/trash.png"
 
 function GuestPage() {
 
+    const navigate = useNavigate()
     const location = useLocation()
     const userData = location.state.data
-    console.log(userData);
+    console.log("gusest", location.state);
 
     const photoRef = useRef<any>(null)
     const videoRef = useRef<any>(null)
     const [hasPhoto, setHasPhoto] = useState<boolean>(false)
 
     const [takenPicture, setTakenPicture] = useState<string>("")
-    const [pictureOptions, setPictureOptions] = useState<boolean>(false)
     const [pictureSlide, setPictureSlide] = useState<number>(0)
     const [openCloseCam, setOpenCloseCam] = useState<boolean>(true)
     const [closeCam, setCloseCam] = useState<boolean>(false)
@@ -151,23 +152,26 @@ function GuestPage() {
         setPictureSlide(allPictures.length - 1)
     }
 
-    async function addToFavourites(picture: any) {
-        let pictureData = {
-            takenPicture: picture,
-            user: location.state.username,
-            eventKey: location.state.eventKey
-        }
 
-        const response = await fetch('http://localhost:2500/addToFavourites', {
-            method: 'POST',
-            body: JSON.stringify(pictureData),
+    async function isLoggedIn() {
+        //hitta fram vår session storage - ta token därifrån
+        const token = location.state.data.token
+
+        const response = await fetch('http://localhost:2500/loggedin', {
             headers: {
-                "Content-Type": "application/json"
+                'Authorization': `Bearer ${token}`
             }
         });
         const data = await response.json();
 
+        if (data.loggedIn == false) {
+            sessionStorage.clear(); // Rensar allt som sparats
+            window.location.reload() // Gör så att kameran även stängs av
+            navigate("/")
+        }
     }
+    isLoggedIn()
+
 
 
 
@@ -175,50 +179,52 @@ function GuestPage() {
         <section>
             <h1>{userData.eventTitle}</h1>
             <p>{userData.name}</p>
-            <Link state={userData} to={"/Favourites"}>Favoriter</Link>
 
             {!hasPhoto && closeCam ? <section className="camera">
                 <video ref={videoRef} ></video>
                 {closeCam && <button onClick={() => takePic()}>SNAP</button>}
             </section> : null}
 
+            {hasPhoto && <button onClick={() => {
+                setHasPhoto(false)
+                getCamera()
+            }}>Ta ny bild</button>}
 
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
                 <canvas ref={photoRef} ></canvas>
             </section>
 
-            {takenPicture && <button onClick={() => addPicture()}>Lägg till bild</button>}
+            {takenPicture && hasPhoto && <button onClick={() => addPicture()}>Lägg till bild</button>}
 
-            <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>
+            {!hasPhoto && <button onClick={closeCam ? () => closeCamera() : () => getCamera()}>{closeCam ? "Stäng kamera" : "Öppna kamera"}</button>}
 
-            <h4>Dina bilder</h4>
-            {allPictures && !fullPage ?
-                allPictures.map((picture: any, id: number) => (
-                    <article key={id}>
-                        <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
-                    </article>
-                )) : null
-            }
 
-            {fullPage ? <section>
-                {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
-                {allPictures.length == 1 ? null : <article>
-                    <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button>
-                    <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
-                </article>}
+            {!closeCam && <section>
 
-                {pictureOptions ? <article>
-                    <h5 onClick={() => addToFavourites(allPictures[pictureSlide])}>favvo</h5>
-                    <h5 onClick={() => setDeleteCheck(true)}>Radera</h5>
-                </article> : null}
+                <h4>Dina bilder</h4>
+                {allPictures && !fullPage ?
+                    allPictures.map((picture: any, id: number) => (
+                        <article key={id}>
+                            <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
+                        </article>
+                    )) : null
+                }
 
-                <h4 onClick={() => setPictureOptions(!pictureOptions)}>...</h4>
-                <h4 onClick={() => setFullPage(false)}>X</h4>
-            </section> : null}
+                {fullPage ? <section>
+                    {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
+                    {allPictures.length == 1 ? null : <article>
+                        <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button>
+                        <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
+                    </article>}
 
-            {deleteCheck && <DeletePicture deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
+                    <img className="trashCan" onClick={() => setDeleteCheck(true)} src={trashCan} alt="" />
 
+                    <h4 onClick={() => setFullPage(false)}>X</h4>
+                </section> : null}
+
+                {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
+            </section>}
         </section>
     );
 }

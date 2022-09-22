@@ -9,17 +9,15 @@ const picturesDB = new nedb({
     autoload: true
 });
 
-const favouritesDB = new nedb({
-    filename: 'favourites.db',
-    autoload: true
-});
+
 
 // lägger till tagen bild
-// router.post('/', async (request, response) => {
-//     const credentials = request.body;
-//     picturesDB.insert(credentials);
-//     response.send(credentials)
-// });
+router.post('/', async (request, response) => {
+    const credentials = request.body;
+    picturesDB.insert(credentials);
+    response.send(credentials)
+});
+
 
 // Hämtar alla bilder
 router.put('/', async (request, response) => {
@@ -48,16 +46,6 @@ router.delete('/', async (request, response) => {
     response.json(removePic)
 });
 
-
-// Lägger till bild i favoriter
-router.post('/', async (request, response) => {
-    const credentials = request.body;
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!", credentials);
-
-    favouritesDB.insert(credentials);
-
-    // response.json(removePic)
-});
 
 
 
