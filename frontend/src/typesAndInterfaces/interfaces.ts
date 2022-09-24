@@ -11,18 +11,31 @@ export interface EventData {
     name: string
     success: boolean
     token: string
-    usernameBool: boolean
+    usernameBool: boolean,
 }
 
 export interface AddPicture {
     takenPicture: string
     user: string
-    eventKey: number
+    eventKey: number,
+    firstName: string
 }
 
 export interface AllPictures {
     eventKey: number
     takenPicture: string
     user: string
-    _id: string
+    _id: string,
+    firstName: string
+}
+
+export interface newAccount {
+    title?: string
+    firstName: string
+    lastName: string
+    username: string
+    email: string
+    password: string
+    eventKey?: number,
+    img?: string
 }

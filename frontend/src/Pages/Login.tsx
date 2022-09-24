@@ -14,6 +14,7 @@ function Login() {
 
     const [eventData, setEventData] = useState<EventData | any>(false) // any????????? inte satt än
 
+    console.log(eventData);
 
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [username, setUsername] = useState<string>("")
@@ -27,14 +28,17 @@ function Login() {
         eventKey: eventKey
     }
 
+
+
     async function login(logIn: LoginInterface): Promise<void> {
-        const response = await fetch('http://localhost:2500/login', {
-            method: 'PUT',
+        const response = await fetch('http://localhost:2500/login/getUser/', {
+            method: 'POST',
             body: JSON.stringify(logIn),
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+
         const data: EventData = await response.json();
         setEventData(data)
 
@@ -45,6 +49,10 @@ function Login() {
 
         }
     }
+
+
+
+    console.log(eventData);
 
 
     return (
@@ -58,7 +66,6 @@ function Login() {
             <section className={styles.inProgress}>
                 {inProgressImg && <img src={inProgress} alt="" />}
             </section>
-
 
             <article className={styles.inputs}>
                 <article>
@@ -78,10 +85,12 @@ function Login() {
                     <img onClick={() => setShowPsw(!showPsw)} src={showPsw ? hidePswImg : showPswImg} alt="" />
                 </article>
 
+                <article>
+                    {eventData.usernameBool === false ? <p>Användarnamnet finns ej</p> : null}
+                    {eventData.success === false && eventData.usernameBool === true ? <p>Lösenordet är fel</p> : null}
+                    {eventData.success === true && eventData.usernameBool === true && eventData.eventKeySuccess === false ? <p>Eventet finns inte</p> : null}
+                </article>
 
-                {eventData.username === false ? <p>Användarnamnet finns ej</p> : null}
-                {eventData.success === false && eventData.username === true ? <p>Lösenordet är fel</p> : null}
-                {eventData.success === true && eventData.username === true && eventData.eventKeySuccess === false ? <p>Eventet finns inte</p> : null}
 
                 <Link to={"/CreateAccount"}>Skapa konto</Link>
             </article>

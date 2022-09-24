@@ -8,6 +8,7 @@ import { EventData, AddPicture, AllPictures } from "../typesAndInterfaces/interf
 import { UserData } from "../typesAndInterfaces/types"
 
 
+
 function GuestPage() {
 
     const navigate = useNavigate()
@@ -22,6 +23,9 @@ function GuestPage() {
     const [pictureSlide, setPictureSlide] = useState<number>(0)
     const [openCloseCam, setOpenCloseCam] = useState<boolean>(true)
     const [closeCam, setCloseCam] = useState<boolean>(false)
+
+    const [allPictures, setAllPictures] = useState<AllPictures[]>([])
+    localStorage.setItem("allPictures", JSON.stringify(allPictures));
 
     function closeCamera(): void {
         setOpenCloseCam(false)
@@ -85,7 +89,8 @@ function GuestPage() {
         let picture: AddPicture = {
             takenPicture: takenPicture,
             user: location.state.username,
-            eventKey: location.state.eventKey
+            eventKey: location.state.eventKey,
+            firstName: userData.name
         }
 
         const response = await fetch('http://localhost:2500/addPicture', {
@@ -102,17 +107,20 @@ function GuestPage() {
     }
 
 
-    const [allPictures, setAllPictures] = useState<AllPictures[]>([])
+
+
     console.log(allPictures);
 
     async function getPictures(): Promise<void> {
 
         let user: UserData = {
-            user: location.state.username
+            user: location.state.username,
+            eventKey: location.state.eventKey,
+            admin: false
         }
 
-        const response = await fetch('http://localhost:2500/pictures', {
-            method: 'PUT',
+        const response = await fetch('http://localhost:2500/pictures/userGallery/', {
+            method: 'POST',
             body: JSON.stringify(user),
             headers: {
                 "Content-Type": "application/json"
@@ -152,6 +160,7 @@ function GuestPage() {
     }
 
 
+
     async function isLoggedIn(): Promise<void> {
         //hitta fram vår session storage - ta token därifrån
         const token = location.state.data.token
@@ -164,7 +173,7 @@ function GuestPage() {
         const data = await response.json();
 
         if (data.loggedIn == false) {
-            sessionStorage.clear(); // Rensar allt som sparats
+            localStorage.clear(); // Rensar allt som sparats
             window.location.reload() // Gör så att kameran även stängs av
             navigate("/")
         }
@@ -174,7 +183,7 @@ function GuestPage() {
 
     // Loggar ut, rensar och stänger av kameran om den är på
     function logOut(): void {
-        sessionStorage.clear();
+        localStorage.clear();
         navigate("/")
         closeCamera()
     }
@@ -211,6 +220,7 @@ function GuestPage() {
 
             {takenPicture && hasPhoto && <button onClick={() => addPicture()}>Lägg till bild</button>}
 
+            {allPictures.length == 0 && <h4>Ta en bild då tråkmåns</h4>}
 
             {
                 !closeCam && allPictures.length !== 0 ? < section >
@@ -241,7 +251,7 @@ function GuestPage() {
                         </section> : null
                     }
 
-                    {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} index={pictureSlide} />}
+                    {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} setNewAllPictures={setAllPictures} index={pictureSlide} setIndex={setPictureSlide} allPictures={allPictures.length} />}
 
                 </section > : null}
             <button onClick={() => logOut()} >Logga ut</button>

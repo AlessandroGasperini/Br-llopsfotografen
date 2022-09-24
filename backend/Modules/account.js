@@ -3,6 +3,7 @@ const nedb = require('nedb-promise');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router()
+const bcryptFunctions = require('../bcrypt');
 
 
 const accountsDB = new nedb({
@@ -15,8 +16,13 @@ const eventDB = new nedb({
     autoload: true
 });
 
+// const picturesDB = new nedb({
+//     filename: 'pictures.db',
+//     autoload: true
+// });
 
-const bcryptFunctions = require('../bcrypt');
+
+
 
 
 //Skapa konto
@@ -54,27 +60,30 @@ router.post('/', async (request, response) => {
         const hashedPassword = await bcryptFunctions.hashPassword(credentials.password);
         credentials.password = hashedPassword;
         accountsDB.insert(credentials);
+
+        if (credentials.eventKey && resObj.eventKeyExists === false) {
+            let event = {
+                title: credentials.title,
+                username: credentials.username,
+                eventKey: credentials.eventKey
+            }
+
+            eventDB.insert(event);
+        }
     }
 
     if (eventKey.length > 0) {
         resObj.eventKeyExists = true
     }
 
-    if (credentials.eventKey && resObj.eventKeyExists === false) {
-        let event = {
-            title: credentials.title,
-            username: credentials.username,
-            eventKey: credentials.eventKey
-        }
 
-        eventDB.insert(event);
-    }
 
     response.json(resObj);
 });
 
-// den är put atm men ska vara post
-router.put('/', async (request, response) => {
+
+
+router.post('/getUser', async (request, response) => {
     const credentials = request.body;
 
     const resObj = {
@@ -84,7 +93,8 @@ router.put('/', async (request, response) => {
         eventKeySuccess: false,
         admin: false,
         eventTitle: "",
-        name: ""
+        name: "",
+        email: ""
     };
 
     const account = await accountsDB.find({
@@ -111,9 +121,9 @@ router.put('/', async (request, response) => {
 
     if (account.length > 0) {
 
-        resObj.username = true
+        resObj.usernameBool = true
         resObj.name = account[0].firstName
-
+        resObj.email = account[0].email
         const correctPassword = await bcryptFunctions.comparePassword(credentials.password, account[0].password);
         if (correctPassword) {
             resObj.success = true;
@@ -138,7 +148,6 @@ router.get('/', async (request, response) => {
     };
 
     const token = request.headers.authorization.replace('Bearer ', '');
-
     try {
         //jämför vår token mot den satta
         const data = jwt.verify(token, 'goodgood');
@@ -156,26 +165,49 @@ router.delete('/', async (request, response) => {
     let credentials = request.body
 
     deleteEvent(credentials.userInfo)
+
     const deleteAccount = await accountsDB.remove({
         username: credentials.userInfo
-    }, {}, function (err, numRemoved) {});
+    });
 
-    resObj = {
-        success: false
-    }
+
     if (deleteAccount.length > 0) {
         resObj.success = true
     }
 
-    response.json(resObj)
+    response.json(accountsDB)
 });
 
 function deleteEvent(user) {
     const deleteEvent = eventDB.remove({
         username: user
-    }, {}, function (err, numRemoved) {});
+    });
 }
 
+
+router.put('/', async (request, response) => {
+    let credentials = request.body
+
+    const eventKey = await eventDB.findOne({
+        title: credentials.title
+    });
+
+    eventDB.update({
+        title: credentials.title
+    }, {
+        $set: {
+            title: credentials.newTitle
+        }
+    })
+
+    accountsDB.update({
+        title: credentials.title
+    }, {
+        $set: {
+            title: credentials.newTitle
+        }
+    })
+});
 
 
 

@@ -3,9 +3,18 @@ function DeletePicture(props: any) {
 
     const pictureData = props.deleteInfo
     const closeModalFunc = props.closeModal
+    const setNewAllPictures = props.setNewAllPictures
+    const index = props.index + 1
+    const allPictures = props.allPictures
+    const setIndex = props.setIndex
+
+
+    console.log(allPictures, index);
+
 
     async function deletePicture() {
-        window.location.reload()
+        closeModalFunc(false)
+
         // Raderar från alla bilder (picturesDB)
         let picture = {
             user: pictureData.user,
@@ -19,10 +28,13 @@ function DeletePicture(props: any) {
             headers: {
                 "Content-Type": "application/json"
             }
-        });
+        }).then(resp => resp.json())
+            .then(data => setNewAllPictures(data)
+            )
 
-
-        const data = await response.json();
+        if (allPictures === index) {
+            setIndex(0)
+        }
 
     }
 

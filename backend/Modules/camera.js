@@ -20,41 +20,58 @@ router.post('/', async (request, response) => {
 
 
 // Hämtar alla bilder
-router.put('/', async (request, response) => {
+router.post('/userGallery', async (request, response) => {
     const credentials = request.body;
 
-    const getPictures = await picturesDB.find({
-        user: credentials.user
-    });
+    if (credentials.admin) {
 
-    response.send(getPictures)
+        const getAllPictures = await picturesDB.find({
+            eventKey: credentials.eventKey
+        });
+
+        response.send(getAllPictures)
+
+    } else if (!credentials.admin) {
+
+        const getPictures = await picturesDB.find({
+            user: credentials.user,
+            eventKey: credentials.eventKey
+        });
+
+        response.send(getPictures)
+    }
 });
 
 
 // Tar bort en bild
-// router.delete('/', async (request, response) => {
-//     const credentials = request.body;
-
-//     const removePic = await picturesDB.remove({
-//         _id: credentials.picture
-//     }, {}, function (err, numRemoved) {});
-
-// });
-
 router.delete('/', async (request, response) => {
     const credentials = request.body;
 
-    console.log(credentials.userInfo);
-
-
     const removePic = await picturesDB.remove({
-        _id: credentials.userInfo
-    }, {}, function (err, numRemoved) {});
+        _id: credentials.picture
+    });
 
-    response.json(credentials)
+    const newGallery = await picturesDB.find({
+        user: credentials.user
+    })
+
+    response.json(newGallery)
 
 });
 
+
+
+router.delete('/eventGallery', async (request, response) => {
+    const credentials = request.body;
+
+    picturesDB.remove({
+        eventKey: credentials.eventKey
+    }, {
+        multi: true
+    });
+    console.log("jajajjajajjaj", credentials);
+
+});
 
 
 

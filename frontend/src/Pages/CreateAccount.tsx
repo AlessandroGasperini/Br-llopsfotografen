@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import CreatedAccountModal from "../Components/CreatedAccountModal";
+import hidePswImg from "../assets/hidePsw.png"
+import showPswImg from "../assets/showPsw.png"
+import { newAccount } from "../typesAndInterfaces/interfaces"
 
 function CreateAccount() {
     const [showPsw, setShowPsw] = useState<boolean>(false)
@@ -16,15 +19,7 @@ function CreateAccount() {
 
     const [confirmed, setConfirmed] = useState<Object | any>(false)
 
-    interface newAccount {
-        title?: string
-        firstName: string
-        lastName: string
-        username: string
-        email: string
-        password: string
-        eventKey?: number
-    }
+
 
     let adminAccount: newAccount = {
         title: title,
@@ -33,7 +28,7 @@ function CreateAccount() {
         username: username,
         email: email,
         password: password,
-        eventKey: eventKey
+        eventKey: eventKey,
     }
 
     let guestAccount: newAccount = {
@@ -54,6 +49,7 @@ function CreateAccount() {
             }
         });
         const data = await response.json();
+        console.log(data);
 
         setConfirmed(data)
     }
@@ -65,6 +61,8 @@ function CreateAccount() {
     }
 
     const [showBtn, setShowBtn] = useState(false)
+
+
 
 
     useEffect(() => {
@@ -88,6 +86,7 @@ function CreateAccount() {
     })
 
 
+
     return (
         <section>
 
@@ -103,11 +102,16 @@ function CreateAccount() {
 
                 <input onChange={(e) => setPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Lösenord" />
                 <input onChange={(e) => setConfirmedPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Upprepa löseord" />
-                {guestOrAdmin && <input type="color" />}
                 <h5>{eventKey}</h5>
                 {guestOrAdmin && <button onClick={() => createKey()}>Ge mig en kod</button>}
-                <input onClick={() => setShowPsw(!showPsw)} type="checkbox" />
+
+                <img onClick={() => setShowPsw(!showPsw)} src={showPsw ? hidePswImg : showPswImg} alt="" />
+
                 {showBtn && <button onClick={() => createNewAccount(guestOrAdmin ? adminAccount : guestAccount)}>Skapa konto</button>}
+
+                {confirmed.usernameExists && <h3>Användarnamnet finns redan</h3>}
+                {confirmed.emailExists && !confirmed.usernameExists ? <h3>Denna Email används redan</h3> : null}
+
             </article>
             {confirmed.success ? <CreatedAccountModal data={guestOrAdmin ? adminAccount : guestAccount} /> : null}
         </section >
