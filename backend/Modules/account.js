@@ -16,12 +16,6 @@ const eventDB = new nedb({
     autoload: true
 });
 
-// const picturesDB = new nedb({
-//     filename: 'pictures.db',
-//     autoload: true
-// });
-
-
 
 
 
@@ -175,7 +169,6 @@ router.delete('/', async (request, response) => {
         resObj.success = true
     }
 
-    response.json(accountsDB)
 });
 
 function deleteEvent(user) {

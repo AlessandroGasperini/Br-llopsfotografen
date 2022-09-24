@@ -107,10 +107,6 @@ function GuestPage() {
     }
 
 
-
-
-    console.log(allPictures);
-
     async function getPictures(): Promise<void> {
 
         let user: UserData = {

@@ -9,8 +9,6 @@ function DeletePicture(props: any) {
     const setIndex = props.setIndex
 
 
-    console.log(allPictures, index);
-
 
     async function deletePicture() {
         closeModalFunc(false)

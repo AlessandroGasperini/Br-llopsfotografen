@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const path = require('path'); //????
 
 const app = express();
 
@@ -42,8 +41,6 @@ app.use("/deleteEventPictures", camera)
 app.use("/sendEmail", email)
 
 
-// email function
-// app.use(express.static(path.join(__dirname, "static"))) //???????????????????????????????
 
 
 

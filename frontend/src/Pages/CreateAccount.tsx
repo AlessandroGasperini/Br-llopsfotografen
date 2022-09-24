@@ -49,7 +49,6 @@ function CreateAccount() {
             }
         });
         const data = await response.json();
-        console.log(data);
 
         setConfirmed(data)
     }
@@ -113,7 +112,7 @@ function CreateAccount() {
                 {confirmed.emailExists && !confirmed.usernameExists ? <h3>Denna Email används redan</h3> : null}
 
             </article>
-            {confirmed.success ? <CreatedAccountModal data={guestOrAdmin ? adminAccount : guestAccount} /> : null}
+            {confirmed.success ? <CreatedAccountModal admin={guestOrAdmin} data={guestOrAdmin ? adminAccount : guestAccount} /> : null}
         </section >
     );
 }

@@ -69,7 +69,6 @@ router.delete('/eventGallery', async (request, response) => {
     }, {
         multi: true
     });
-    console.log("jajajjajajjaj", credentials);
 
 });
 

@@ -14,7 +14,6 @@ function Login() {
 
     const [eventData, setEventData] = useState<EventData | any>(false) // any????????? inte satt än
 
-    console.log(eventData);
 
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [username, setUsername] = useState<string>("")

@@ -25,7 +25,6 @@ function InviteGuestModal(props: any) {
             }
         })
         const data = await response.json();
-        console.log(data);
 
     }
 

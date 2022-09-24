@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 function CreatedAccountModal(props: any) {
 
     const info = props.data
+    const admin = props.admin
 
-    console.log(info.email);
 
     const email = {
-        from: "asg.gasperini@gmail.com",
+        from: "phyllographen@gmail.com",
         to: info.email,
         subject: "Phyllographen - Eventkod till " + info.title,
         message: "EVENTKOD: " + info.eventKey
@@ -24,8 +24,6 @@ function CreatedAccountModal(props: any) {
             }
         })
         const data = await response.json();
-        console.log(data);
-
     }
 
     return (
@@ -41,7 +39,7 @@ function CreatedAccountModal(props: any) {
                 DU HITTAR ÄVEN KODEN PÅ DIN MAIL
             </article> : null}
 
-            <Link to={"/"}><button onClick={() => sendEmail()}>Logga in</button></Link>
+            <Link to={"/"}><button onClick={admin ? () => sendEmail() : () => null}>Logga in</button></Link>
 
         </section>
     );

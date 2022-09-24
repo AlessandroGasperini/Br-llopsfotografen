@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Email } from "../typesAndInterfaces/types"
 
@@ -49,16 +48,13 @@ function DeleteAccountModal(props: any) {
     }
     async function deleteEventPictures() {
 
-
-
         const response = await fetch('http://localhost:2500/deleteEventPictures/eventGallery/', {
             method: 'DELETE',
             body: JSON.stringify(eventKey),
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then(resp => resp.json())
-            .then(data => console.log(data))
+        })
     }
 
     async function deleteAccount() {

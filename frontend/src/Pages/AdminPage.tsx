@@ -17,7 +17,6 @@ function AdminPage() {
     const location = useLocation()
     const user = location.state
 
-    console.log(user);
 
 
     const [ableDelete, setAbleDelete] = useState(false)
@@ -42,7 +41,6 @@ function AdminPage() {
     const [allPictures, setAllPictures] = useState<AllPictures[]>([])
     localStorage.setItem("allPictures", JSON.stringify(allPictures));
 
-    console.log(allPictures);
 
 
     function closeCamera(): void {
@@ -119,17 +117,12 @@ function AdminPage() {
             }
         });
         const data = await response.json()
-        console.log(data);
-
         getPictures()
         setHasPhoto(false)
         getCamera()
     }
 
 
-
-
-    console.log(allPictures);
 
     async function getPictures(): Promise<void> {
 
