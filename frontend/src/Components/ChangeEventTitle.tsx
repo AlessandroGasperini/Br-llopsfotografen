@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { EventModal, EventInfo } from "../typesAndInterfaces/types"
+import styles from "./InviteGuestModal.module.css"
 
-function ChangeEventTitle(props: any) {
+function ChangeEventTitle(props: EventModal) {
 
-    const [changedTittle, setChangedTitle] = useState("")
+    const [changedTittle, setChangedTitle] = useState<string>("")
 
     async function changeTitle() {
         props.setTitle(changedTittle)
         props.setModal(false)
-        let eventInfo = {
+
+        let eventInfo: EventInfo = {
             title: props.eventTitle,
             newTitle: changedTittle
         }
@@ -24,13 +27,13 @@ function ChangeEventTitle(props: any) {
 
     return (
         <section className="modalContainer">
-            <h1>Ändrea eventnamn</h1>
+            <h1 className={styles.h1}>Ändrea eventnamn</h1>
 
-            <input onChange={(e) => setChangedTitle(e.target.value)} type="text" />
+            <input className={styles.inputTitle} placeholder="Nytt titelnamn" onChange={(e) => setChangedTitle(e.target.value)} type="text" />
 
-            {changedTittle != "" ? <button onClick={() => changeTitle()}>Ändra</button> : null}
+            {changedTittle != "" ? <button className={styles.inviteBtn} onClick={() => changeTitle()}>Ändra</button> : null}
 
-            <button onClick={() => props.setModal(false)}>stäng</button>
+            <button className={styles.close} onClick={() => props.setModal(false)}>stäng</button>
         </section>
     );
 }

@@ -5,58 +5,77 @@
 font-family: 'Encode Sans Condensed', sans-serif;
 font-family: 'Syncopate', sans-serif; */
 
-.userPhoto {
-    margin: 1vh 0 2vh 0;
-    color: white;
-    font-family: 'Syncopate', sans-serif;
-    font-size: 14px;
-}
-
-.container {
-    overflow: hidden;
-}
-
-.container h1 {
-    font-size: 1.4rem;
-    font-family: 'Gruppo', cursive;
-    color: white;
-}
-
-.container header {
-    height: 6vh;
+.header {
+    display: flex;
     justify-content: space-between;
-    margin: 3vh auto 6vh auto;
+    margin: -1vh 3vh;
 }
 
-.container header img {
+.header img {
     width: 6vh;
-    margin: 0 3vh;
 }
 
-header h4 {
+.header h1 {
+    font-size: 2rem;
+    margin-left: 4vw;
+}
+
+.name {
+    margin-top: -2vh;
     font-family: 'Encode Sans Condensed', sans-serif;
-    font-weight: bolder;
-    font-size: 1rem;
-    margin: 8px 2px 1px 1px;
-    color: black;
+    color: white;
+    letter-spacing: 5px;
+    font-size: 1.3rem;
+    text-decoration: overline;
 }
 
-.invite {
-    margin: 19px 2px 1px 1px;
+.logOutBtn {
+    position: fixed;
+    bottom: 3vh;
+    left: 20vh;
 }
 
-header h3 {
-    font-family: 'Encode Sans Condensed', sans-serif;
-    font-size: 17px;
-    letter-spacing: 8px;
-}
-
-header article {
-    background-color: white;
+.takePictureBtn {
+    margin-top: 6vh;
+    width: 12vh;
+    height: 12vh;
     border-radius: 50%;
-    height: 8vh;
-    width: 8vh;
+    color: white;
+    background-color: #904949;
 }
+
+.noImg {
+    color: white;
+    margin-top: 35vh;
+    font-family: 'Encode Sans Condensed', sans-serif;
+    letter-spacing: 5px;
+}
+
+.afterPicTaken {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 3vh;
+}
+
+.afterPicTaken button {
+    font-weight: 500;
+    border-radius: 2px;
+    height: 36px;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #356c71;
+}
+
+.takePictureBtn {
+    margin-top: 6vh;
+    width: 12vh;
+    height: 12vh;
+    border-radius: 50%;
+    color: white;
+    background-color: #904949;
+}
+
+
 
 .pictureWrap {
     display: flex;
@@ -73,12 +92,14 @@ header article {
 .oneImg {
     width: 36vw;
     border-radius: 4px;
+    margin-top: 3vh;
 }
 
 .smallPictures {
     display: flex;
     justify-content: center;
 }
+
 
 .logOutBtn {
     position: fixed;
@@ -113,7 +134,7 @@ header article {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-top: 6vh;
+    margin-top: 11vh;
 }
 
 .noBtns {

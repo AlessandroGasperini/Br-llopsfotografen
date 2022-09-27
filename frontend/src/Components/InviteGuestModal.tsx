@@ -1,19 +1,22 @@
 import { useState } from "react";
+import { Email, InviteGuest } from "../typesAndInterfaces/interfaces"
+import styles from "./InviteGuestModal.module.css"
 
-function InviteGuestModal(props: any) {
+function InviteGuestModal(props: InviteGuest) {
+    console.log(props);
 
     const [emailInfo, setEmailInfo] = useState<string>("")
 
     const userProps = props.userInfo.data
 
-    const email = {
-        from: "asg.gasperini@gmail.com",
+    const email: Email = {
+        from: "phyllographen@gmail.com",
         to: emailInfo,
         subject: "Phyllographen - Eventkod till " + userProps.eventTitle,
-        message: "Ladda ner Phyllographen skapa gästkonto och använd eventkoden. EVENTKOD: " + props.userInfo.eventKey
+        message: "Ladda ner Phyllographen, skapa gästkonto och använd eventkoden. EVENTKOD: " + props.userInfo.eventKey
     }
 
-    async function sendEmail() {
+    async function sendEmail(): Promise<void> {
 
         await props.setInvite(false)
 
@@ -30,11 +33,11 @@ function InviteGuestModal(props: any) {
 
     return (
         <section className="modalContainer">
-            <h1>Bjud in gäster och dela med dig av eventkoden</h1>
-            <input type="email" onChange={(e) => setEmailInfo(e.target.value)} />
+            <h1 className={styles.h1}>Bjud in gäster och dela med dig av eventkoden</h1>
+            <input className={styles.input} placeholder="E-mail" type="email" onChange={(e) => setEmailInfo(e.target.value)} />
 
-            <button onClick={() => props.setInvite(false)}>STÄNG</button>
-            {emailInfo != "" && <button onClick={() => sendEmail()}>BJUD IN</button>}
+            {emailInfo != "" && <button className={styles.inviteBtn} onClick={() => sendEmail()}>BJUD IN</button>}
+            <button className={styles.close} onClick={() => props.setInvite(false)}>STÄNG</button>
         </section>
     );
 }

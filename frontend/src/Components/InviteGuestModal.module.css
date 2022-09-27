@@ -1,0 +1,59 @@
+.input {
+    display: block;
+    margin: 16vh auto;
+}
+
+.inputTitle {
+    text-align: center;
+    display: block;
+    margin: 16vh auto;
+}
+
+
+.h1 {
+    margin: 5vh;
+}
+
+.h2 {
+    font-size: 1.4rem;
+    font-family: 'Gruppo', cursive;
+    color: white;
+    margin: 8vh 2vh 0 2vh;
+}
+
+.inviteBtn {
+    display: block;
+    margin: 0 auto;
+    width: 25vh;
+    height: 7vh;
+    border-radius: 12px;
+}
+
+.deleteBtn {
+    margin: 14vh auto;
+    display: block;
+    width: 25vh;
+    height: 7vh;
+    border-radius: 12px;
+    background-color: #8e4545b8;
+}
+
+.close {
+    margin: 30vh auto 0 auto;
+}
+
+.img {
+    width: 48vh;
+    border-radius: 6px;
+    margin-top: 10vh;
+}
+
+.youSure {
+    margin: 4vh;
+}
+
+.btns {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 22vh;
+}

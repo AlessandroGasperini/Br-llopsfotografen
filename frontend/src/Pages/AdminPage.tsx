@@ -5,29 +5,32 @@ import DeletePicture from "../Components/DeletePictureModal";
 import trashCan from "../assets/trash.png"
 import cameraClosed from "../assets/cameraClosed.png"
 import cameraOpen from "../assets/cameraOpen.png"
-import { EventData, AddPicture, AllPictures } from "../typesAndInterfaces/interfaces"
-import { UserData } from "../typesAndInterfaces/types"
+import { AddPicture, AllPictures, LoginAdmin } from "../typesAndInterfaces/interfaces"
+import { UserData, Pictures } from "../typesAndInterfaces/types"
 import styles from "./AdminPage.module.css"
 import InviteGuestModal from "../Components/InviteGuestModal";
 import ChangeEventTitle from "../Components/ChangeEventTitle";
+import hamburger from "../assets/hamburger.png"
+import left from "../assets/left.png"
+import right from "../assets/right.png"
+
+
 
 function AdminPage() {
 
     const navigate = useNavigate()
     const location = useLocation()
-    const user = location.state
+    const user: LoginAdmin = location.state
 
 
-
-    const [ableDelete, setAbleDelete] = useState(false)
+    const [ableDelete, setAbleDelete] = useState<boolean>(false)
     const [accountModal, setAccountModal] = useState<boolean>(false)
-
-    const [closeModal, setCloseModal] = useState<boolean>(false)
-
 
     const photoRef = useRef<HTMLCanvasElement | any>(null) // | null funkade inte WTF?
     const videoRef = useRef<HTMLVideoElement | any>(null) // | null funkade inte WTF?
     const [hasPhoto, setHasPhoto] = useState<boolean>(false)
+    const [fullPage, setFullPage] = useState<boolean>(false)
+    const [deleteCheck, setDeleteCheck] = useState<boolean>(false)
 
     const [takenPicture, setTakenPicture] = useState<string>("")
     const [pictureSlide, setPictureSlide] = useState<number>(0)
@@ -39,13 +42,12 @@ function AdminPage() {
 
 
     const [allPictures, setAllPictures] = useState<AllPictures[]>([])
-    localStorage.setItem("allPictures", JSON.stringify(allPictures));
-
+    localStorage.setItem("allPictures", JSON.stringify(allPictures)); // jaha nudå?? behöver inte använda denna
 
 
     function closeCamera(): void {
         setOpenCloseCam(false)
-        window.location.reload()
+        window.location.reload() // för att kameran ska stängas av helt på
     }
 
 
@@ -59,7 +61,7 @@ function AdminPage() {
                     video.srcObject = stream
                     video.play()
                 } else {
-                    let tracks = stream.getTracks(); // void??
+                    let tracks = stream.getTracks();
 
                     tracks.forEach(function (track) {
                         // stopping every track
@@ -76,24 +78,28 @@ function AdminPage() {
         setCloseCam(true)
     }
 
-    if (!openCloseCam) {
-        getCamera()
-    }
+    // if (!openCloseCam) { BEHÖVS INTE
+    //     getCamera()
+    // }
 
-    function takePic(): void { // ??? Void nu pga saknar return
-        const width = 414
-        const height = 400
+    console.log(hasPhoto);
+
+
+    function takePic(): void {
+        const width = 300
+        const height = 300
         let video = videoRef.current
         let photo = photoRef.current
 
         photo.width = width
         photo.height = height
 
-        let ctx = photo.getContext("2d")// VAD BLIR DETTA I TS?
+        let ctx: CanvasRenderingContext2D = photo.getContext("2d")
 
         ctx.drawImage(video, 0, 0, width, height)
 
-        let jpgURL = photoRef.current.toDataURL("image/jpeg"); // VAD BLIR DETTA I TS?
+        let jpgURL: string = photoRef.current.toDataURL("image/jpeg");
+
         setHasPhoto(true)
         setTakenPicture(jpgURL)
     }
@@ -142,18 +148,18 @@ function AdminPage() {
         });
         const data = await response.json();
         setAllPictures(data)
-
     }
 
     useEffect(() => {
         getPictures()
-        // getTitle()
     }, [])
 
-
-
-    const [fullPage, setFullPage] = useState(false)
-    const [deleteCheck, setDeleteCheck] = useState(false)
+    // så logga ut inte försvinner
+    useEffect(() => {
+        if (allPictures.length == 0) {
+            setFullPage(false)
+        }
+    })
 
 
     function selectPic(id: number): void {
@@ -161,12 +167,10 @@ function AdminPage() {
         setFullPage(true)
     }
 
-
     useEffect(() => {
         if (pictureSlide === allPictures.length) {
             setPictureSlide(0)
         }
-
     }, [pictureSlide])
 
     if (pictureSlide === -1) {
@@ -174,12 +178,10 @@ function AdminPage() {
     }
 
 
-
-
-    async function isLoggedIn() {
+    async function isLoggedIn(): Promise<void> {
         //hitta fram vår session storage - ta token därifrån
-        const token = location.state.data.token
-
+        const token: string = location.state.data.token
+        localStorage.setItem("token", JSON.stringify(token)); // jaha nudå?? behöver inte använda denna
         const response = await fetch('http://localhost:2500/loggedin', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -188,9 +190,9 @@ function AdminPage() {
         const data = await response.json();
 
         if (data.loggedIn == false) {
-            sessionStorage.clear(); // Rensar allt som sparats
-            window.location.reload() // Gör så att kameran även stängs av
+            localStorage.clear(); // Rensar allt som sparats
             navigate("/")
+            window.location.reload() // Gör så att kameran även stängs av
         }
     }
     isLoggedIn()
@@ -201,84 +203,87 @@ function AdminPage() {
         closeCamera()
     }
 
-
     return (
-        <section>
+        <section className={styles.container}>
             <header>
-                <h1>{title}</h1>
-
-                <h4>{user.data.name}</h4>
-
-                <button onClick={() => setAbleDelete(!ableDelete)}> ...</button>
-                {ableDelete && <h4 onClick={() => setInvite(true)}>Bjud in grpher</h4>}
-                {ableDelete && <h4 onClick={() => setChangeTitle(true)}>Ändra eventnamn</h4>}
-                {ableDelete && <h4 onClick={() => setAccountModal(true)}>RADERA KONTO</h4>}
-
+                <img onClick={() => setAbleDelete(!ableDelete)} src={hamburger} alt="" />
+                {!ableDelete && <h1>{title}</h1>}
+                {ableDelete && <article><h4 className={styles.invite} onClick={() => setInvite(true)}>Bjud in</h4></article>}
+                {ableDelete && <article><h4 onClick={() => setChangeTitle(true)}>Ändra title</h4></article>}
+                {ableDelete && <article><h4 onClick={() => setAccountModal(true)}>Radera konto</h4></article>}
                 <img onClick={closeCam ? () => closeCamera() : () => getCamera()} src={closeCam ? cameraOpen : cameraClosed} alt="" />
             </header>
+
 
 
             {
                 !hasPhoto && closeCam ? <section className="camera">
                     <video ref={videoRef} ></video>
-                    {closeCam && <button onClick={() => takePic()}>SNAP</button>}
+                    {closeCam && <button className={styles.takePictureBtn} onClick={() => takePic()}>SNAP</button>}
                 </section> : null
             }
 
-            {
-                hasPhoto && <button onClick={() => {
-                    setHasPhoto(false)
-                    getCamera()
-                }}>Ta ny bild</button>
-            }
 
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
                 <canvas ref={photoRef} ></canvas>
             </section>
 
-            {takenPicture && hasPhoto && <button onClick={() => addPicture()}>Lägg till bild</button>}
+            <section className={styles.afterPicTaken}>
+                {
+                    hasPhoto && <button onClick={() => {
+                        setHasPhoto(false)
+                        getCamera()
+                    }}>Ta ny bild</button>
+                }
+                {takenPicture && hasPhoto && <button onClick={() => addPicture()}>Lägg till bild</button>}
+            </section>
 
-            {allPictures.length == 0 && <h4>Va den första att ta en bild</h4>}
+            {allPictures.length == 0 && !closeCam && <h4 className={styles.noImg}>Va den första att ta en bild</h4>}
 
             {
-                !closeCam && allPictures.length !== 0 ? < section >
+                !closeCam && allPictures.length !== 0 ? < section className={styles.smallPictures} >
 
-                    <h4>Dina bilder</h4>
-                    {
-                        allPictures && !fullPage ?
-                            allPictures.map((picture: any, id: number) => (
-                                <article key={id}>
-                                    <img className="img" onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
-                                    <p className={styles.userPhoto}>@{picture.firstName}</p>
+                    <section className={!fullPage ? styles.pictureWrap : ""}>
+
+                        {
+                            allPictures && !fullPage ?
+                                allPictures.map((picture: any, id: number) => (
+                                    <article className={styles.allPictures} key={id}>
+                                        <img className={styles.oneImg} onClick={() => selectPic(id)} src={picture.takenPicture} alt="" />
+                                        <p className={styles.userPhoto}>@{picture.firstName}</p>
+                                    </article>
+                                )) : null
+                        }
+                    </section>
+
+                    <section className={styles.pictureToggle}>
+                        {
+                            fullPage ? <section>
+                                {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img className={styles.pictureLarge} src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
+                                {allPictures && allPictures.length != pictureSlide && pictureSlide != -1 && <p className={styles.tookPicture}>@{allPictures[pictureSlide].firstName}</p>}
+                                {allPictures.length == 1 ? null : <article className={styles.toggleBtns}>
+                                    <img onClick={() => setPictureSlide(pictureSlide - 1)} src={left} alt="" />
+                                    <img onClick={() => setPictureSlide(pictureSlide + 1)} src={right} alt="" />
+                                </article>}
+
+                                <article className={allPictures.length == 1 ? styles.noBtns : styles.trashContainer}>
+                                    <h4 onClick={() => setFullPage(false)}>clås</h4>
+                                    <img className={styles.trashCan} onClick={() => setDeleteCheck(true)} src={trashCan} alt="" />
                                 </article>
-                            )) : null
-                    }
 
-
-                    {
-                        fullPage ? <section>
-                            {pictureSlide === -1 ? null : <section> {allPictures && allPictures.length != pictureSlide ? <img src={allPictures[pictureSlide].takenPicture} alt="" /> : null} </section>}
-                            {allPictures && allPictures.length != pictureSlide && pictureSlide != -1 && <p>@{allPictures[pictureSlide].firstName}</p>}
-                            {allPictures.length == 1 ? null : <article>
-                                <button onClick={() => setPictureSlide(pictureSlide - 1)}>left</button>
-                                <button onClick={() => setPictureSlide(pictureSlide + 1)}>right</button>
-                            </article>}
-
-                            <img className="trashCan" onClick={() => setDeleteCheck(true)} src={trashCan} alt="" />
-
-                            <h4 onClick={() => setFullPage(false)}>X</h4>
-                        </section> : null
-                    }
-
+                            </section> : null
+                        }
+                    </section>
 
 
                 </section > : null}
-            <button onClick={() => logOut()} >Logga ut</button>
+
+            {!fullPage && <button className={styles.logOutBtn} onClick={() => logOut()} >Logga ut</button>}
 
             {changeTitle && <ChangeEventTitle setModal={setChangeTitle} setTitle={setTitle} eventTitle={user.data.eventTitle} />}
             {invite && <InviteGuestModal userInfo={user} setInvite={setInvite} />}
-            {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} setNewAllPictures={setAllPictures} index={pictureSlide} setIndex={setPictureSlide} allPictures={allPictures.length} />}
+            {deleteCheck && <DeletePicture closeModal={setDeleteCheck} deleteInfo={allPictures[pictureSlide]} setNewAllPictures={setAllPictures} index={pictureSlide} setIndex={setPictureSlide} allPictures={allPictures.length} admin={true} />}
             {accountModal && <DeleteAccountModal pictures={allPictures} closeModal={setAccountModal} userInfo={user} admin={true} />}
 
         </section>

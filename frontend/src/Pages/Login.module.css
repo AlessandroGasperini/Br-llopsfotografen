@@ -1,16 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Encode+Sans+Condensed:wght@300&family=Syncopate&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gruppo&display=swap');
 
+/* font-family: 'Amatic SC', cursive;
+font-family: 'Encode Sans Condensed', sans-serif;
+font-family: 'Syncopate', sans-serif; */
+
 header {
+    margin: 2vh auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 60vh;
+    justify-content: space-around;
+    color: #FCFBF7;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background-position: center;
+    background-repeat: repeat;
+    background-size: cover;
+    background: rgb(9, 47, 47);
+    background: linear-gradient(0deg, rgba(9, 47, 47, 1) 61%, rgba(23, 36, 65, 1) 100%);
+
 }
 
 h1 {
     font-family: 'Gruppo', cursive;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     letter-spacing: 4px;
+    text-align: center;
 }
 
 .hamburger {
@@ -21,42 +43,94 @@ h1 {
     width: 3vh;
 }
 
-.inProgress {
-    display: flex;
-    justify-content: start;
-    height: 5vh;
+
+
+.inputs {
+    margin-top: 17vh;
 }
 
-.inProgress img {
-    width: 5vh;
+.inputs article {
+    margin: 5vh;
 }
 
-body {
+input {
+    width: 64vw;
+    height: 6vh;
+    /* text-align: center; */
+    font-size: 1.2rem;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid white;
+    color: white;
+    font-family: 'Encode Sans Condensed', sans-serif;
+    padding-left: 2vh;
+    letter-spacing: 6px;
+}
+
+input:active {
+    outline: none;
+}
+
+
+
+
+/* CSS */
+button {
+    background-color: #e1ecf48c;
+    border-radius: 30px;
+    border: none;
+    color: #000000;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
+    outline: none;
+    font-size: 15px;
+    width: 30vw;
+    height: 6vh;
+    font-size: 1.2rem;
+}
+
+
+
+
+.btnAndPswContainer section {
     display: flex;
     justify-content: center;
 }
 
-.inputs article {
-    margin: 3vh;
+.eye {
+    display: flex;
+    justify-content: end;
+    width: 65vw;
+    margin: 2vh auto;
 }
 
-input {
-    width: 63vw;
-    height: 6vh;
-    text-align: center;
-    font-size: 1rem;
-    background-color: #FCFBF7;
-}
-
-button {
-    width: 30vw;
-    height: 6vh;
-    font-size: 1.2rem;
-    border-radius: 4px;
-}
-
-/* .btnAndPswContainer {} */
-
-.btnAndPswContainer img {
+.eye img {
     width: 5vh;
+    height: 3vh;
+}
+
+.createBtn {
+    margin-top: 23vh
+}
+
+.createLink {
+    color: white;
+    text-decoration: none;
+    font-family: 'Encode Sans Condensed', sans-serif;
+    text-decoration: underline;
+}
+
+.wrongLogin p {
+    position: absolute;
+    left: 17vh;
+    color: white;
+    font-size: 1rem;
+    font-family: cursive;
+    font-family: 'Encode Sans Condensed', sans-serif;
+
+}
+
+.container {
+    overflow: hidden;
 }

@@ -46,6 +46,7 @@ router.post('/userGallery', async (request, response) => {
 // Tar bort en bild
 router.delete('/', async (request, response) => {
     const credentials = request.body;
+    console.log(credentials);
 
     const removePic = await picturesDB.remove({
         _id: credentials.picture
@@ -55,7 +56,12 @@ router.delete('/', async (request, response) => {
         user: credentials.user
     })
 
-    response.json(newGallery)
+    const newGalleryAdmin = await picturesDB.find({
+        eventKey: credentials.eventKey
+    })
+
+    // skickar tillbaka hela listan igen om admin raderat en bild
+    response.json(credentials.admin ? newGalleryAdmin : newGallery)
 
 });
 

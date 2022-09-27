@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Encode+Sans+Condensed:wght@300&family=Syncopate&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gruppo&display=swap');
+
+/* font-family: 'Amatic SC', cursive;
+font-family: 'Encode Sans Condensed', sans-serif;
+font-family: 'Syncopate', sans-serif; */
+
+.welcome {
+    margin-top: 20vh;
+}
+
+.adminKeyInfo {
+    margin: 0 3vw;
+}
+
+.adminKeyInfo h2 {
+    margin-top: 9vh;
+    font-family: 'Encode Sans Condensed', sans-serif;
+
+}
+
+.eventKey {
+    margin-top: -3vh;
+    letter-spacing: 8px;
+}
+
+.adminKeyInfo h3 {
+    font-size: 1rem;
+    margin-top: 3vh;
+    font-family: 'Encode Sans Condensed', sans-serif;
+    letter-spacing: 3px;
+}
+
+.createBtn {
+    margin-top: 25vh;
+}

@@ -10,6 +10,7 @@ router.post('/', async (request, response) => {
     const to = emailData.to
     const subject = emailData.subject
     const message = emailData.message
+    const attachments = emailData.attachments
 
     const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -23,7 +24,8 @@ router.post('/', async (request, response) => {
         from: from,
         to: to,
         subject: subject,
-        text: message
+        text: message,
+        attachments: attachments
     }
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {

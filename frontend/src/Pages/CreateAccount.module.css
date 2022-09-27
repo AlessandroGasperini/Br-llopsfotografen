@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Encode+Sans+Condensed:wght@300&family=Syncopate&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gruppo&display=swap');
+
+/* font-family: 'Amatic SC', cursive;
+font-family: 'Encode Sans Condensed', sans-serif;
+font-family: 'Syncopate', sans-serif; */
+
+
+.container .createH1 {
+    color: white;
+    font-size: 1rem;
+    margin: 6vh 0 3vh 0;
+}
+
+.adminOrGuest {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.adminOrGuest h4 {
+    padding: 0 6vh;
+    font-size: 1.5rem;
+    font-family: monospace;
+    color: white;
+}
+
+.choosenAccount {
+    padding: 0 6vh;
+    font-size: 1.5rem;
+    font-family: monospace;
+    color: white;
+    text-decoration: underline;
+    text-underline-offset: 1rem;
+    text-decoration-thickness: 1px;
+}
+
+.container input {
+    margin-bottom: 2vh;
+}
+
+.eye {
+    width: 83vw;
+    display: flex;
+    justify-content: end;
+}
+
+.adminEye {
+    width: 83vw;
+    display: flex;
+    justify-content: end;
+}
+
+.eye img,
+.adminEye img {
+    width: 5vh;
+    height: 3vh;
+}
+
+.eventKey {
+    position: absolute;
+    left: 181px;
+    bottom: 12vh;
+    font-size: 14px;
+    color: white;
+    letter-spacing: 3px;
+}
+
+.codeBtn {
+    color: white;
+    font-size: 16px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    position: absolute;
+    left: 21vh;
+    margin: 0;
+    top: 85vh;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+
+}
+
+.createAccount {
+    width: 21vh;
+    margin-top: 5vh;
+}
+
+.createAccountAdmin {
+    margin: 5vh 0 0 24vh;
+}
+
+.eventTitle {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.container {
+    overflow: hidden;
+}
+
+.exists {
+    font-size: 13px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
+    margin-top: 5vh;
+}
+
+.existsAdmin {
+    position: absolute;
+    left: 5vh;
+    top: 91vh;
+    font-size: 12px;
+    color: white;
+}
+
+video {
+    width: 50vh;
+}
+
+.existsAdmin h3 {
+    font-family: 'Encode Sans Condensed', sans-serif;
+    letter-spacing: 1px;
+}

@@ -16,6 +16,10 @@ const eventDB = new nedb({
     autoload: true
 });
 
+const eventVisitors = new nedb({
+    filename: 'eventVisitors.db',
+    autoload: true
+});
 
 
 
@@ -79,7 +83,6 @@ router.post('/', async (request, response) => {
 
 router.post('/getUser', async (request, response) => {
     const credentials = request.body;
-
     const resObj = {
         usernameBool: false,
         success: false,
@@ -99,11 +102,22 @@ router.post('/getUser', async (request, response) => {
         eventKey: credentials.eventKey
     });
 
+    const eventGuestList = await eventVisitors.find({
+        username: credentials.username,
+        eventKey: credentials.eventKey
+    });
+
+
+
+
+
 
     if (findEvent.length > 0) {
         const event = findEvent[0]
-        resObj.eventTitle = event.title
         const keyInput = credentials.eventKey
+
+        resObj.eventTitle = event.title
+
         if (event.eventKey === keyInput) {
             resObj.eventKeySuccess = true
         }
@@ -111,10 +125,18 @@ router.post('/getUser', async (request, response) => {
         if (event.username === credentials.username) {
             resObj.admin = true
         }
+
     }
 
     if (account.length > 0) {
-
+        let visitorObj = {
+            username: credentials.username,
+            eventKey: credentials.eventKey,
+            email: account[0].email
+        }
+        if (eventGuestList.length === 0) {
+            eventVisitors.insert(visitorObj);
+        }
         resObj.usernameBool = true
         resObj.name = account[0].firstName
         resObj.email = account[0].email
@@ -164,10 +186,15 @@ router.delete('/', async (request, response) => {
         username: credentials.userInfo
     });
 
-
     if (deleteAccount.length > 0) {
         resObj.success = true
     }
+
+    eventVisitors.remove({
+        eventKey: credentials.eventKey
+    }, {
+        multi: true
+    });
 
 });
 
@@ -180,7 +207,7 @@ function deleteEvent(user) {
 
 router.put('/', async (request, response) => {
     let credentials = request.body
-
+    console.log(credentials);
     const eventKey = await eventDB.findOne({
         title: credentials.title
     });
@@ -202,6 +229,18 @@ router.put('/', async (request, response) => {
     })
 });
 
+
+router.post('/getEmails', async (request, response) => {
+    let credentials = request.body
+    console.log(credentials);
+
+    const eventKey = await eventVisitors.find({
+        eventKey: credentials.eventKey
+    });
+
+    response.json(eventKey)
+
+});
 
 
 

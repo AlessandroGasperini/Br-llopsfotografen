@@ -32,6 +32,7 @@ app.use("/deleteAccount", account)
 app.use("/getAllGuests", account)
 app.use("/changeTitle", account)
 app.use("/getEventTitle", account)
+app.use("/eventEmails", account)
 
 app.use("/addPicture", camera)
 app.use("/pictures", camera)

@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import CreatedAccountModal from "../Components/CreatedAccountModal";
 import hidePswImg from "../assets/hidePsw.png"
 import showPswImg from "../assets/showPsw.png"
-import { newAccount } from "../typesAndInterfaces/interfaces"
+import { InputNewAccount } from "../typesAndInterfaces/interfaces"
+import { ConfirmAccount } from "../typesAndInterfaces/types"
+import styles from "./CreateAccount.module.css"
 
 function CreateAccount() {
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [guestOrAdmin, setGuestOrAdmin] = useState<boolean>(false)
+    const [showBtn, setShowBtn] = useState<boolean>(false)
 
     const [title, setTitle] = useState<string>("")
     const [firstName, setFirstName] = useState<string>("")
@@ -17,11 +20,9 @@ function CreateAccount() {
     const [confirmPassword, setConfirmedPassword] = useState<string>("")
     const [eventKey, setEventKey] = useState<number>()
 
-    const [confirmed, setConfirmed] = useState<Object | any>(false)
+    const [confirmed, setConfirmed] = useState<ConfirmAccount | any>(false) //Any pga läser inte in de direkt
 
-
-
-    let adminAccount: newAccount = {
+    let adminAccount: InputNewAccount = {
         title: title,
         firstName: firstName,
         lastName: lastName,
@@ -31,7 +32,7 @@ function CreateAccount() {
         eventKey: eventKey,
     }
 
-    let guestAccount: newAccount = {
+    let guestAccount: InputNewAccount = {
         firstName: firstName,
         lastName: lastName,
         username: username,
@@ -40,7 +41,7 @@ function CreateAccount() {
     }
 
 
-    async function createNewAccount(account: newAccount) {
+    async function createNewAccount(account: InputNewAccount): Promise<void> {
         const response = await fetch('http://localhost:2500/signup', {
             method: 'POST',
             body: JSON.stringify(account),
@@ -49,17 +50,15 @@ function CreateAccount() {
             }
         });
         const data = await response.json();
-
         setConfirmed(data)
     }
 
 
-    function createKey() {
+    function createKey(): void {
         setEventKey(Math.floor(Math.random() * 90000) + 10000)
 
     }
 
-    const [showBtn, setShowBtn] = useState(false)
 
 
 
@@ -87,13 +86,15 @@ function CreateAccount() {
 
 
     return (
-        <section>
+        <section className={styles.container}>
 
-            <h1>{guestOrAdmin ? "Skapa eventkonto" : "Skapa konto för att delta i event"}</h1>
+            <h1 className={styles.createH1}>{guestOrAdmin ? "Skapa eventkonto" : "Skapa konto för att delta i event"}</h1>
 
-            <button onClick={() => setGuestOrAdmin(false)}>GUEST</button> <button onClick={() => setGuestOrAdmin(true)}>ADMIN</button>
+            <section className={styles.adminOrGuest}>
+                <h4 className={!guestOrAdmin ? styles.choosenAccount : ""} onClick={() => setGuestOrAdmin(false)}>GUEST</h4> <h4 className={guestOrAdmin ? styles.choosenAccount : ""} onClick={() => setGuestOrAdmin(true)}>ADMIN</h4>
+            </section>
             <article>
-                {guestOrAdmin && <input onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Event namn" />}
+                {guestOrAdmin && <input className={styles.eventTitle} onChange={(e) => setTitle(e.target.value)} type="text" placeholder="Event titel" />}
                 <input onChange={(e) => setFirstName(e.target.value)} type="text" placeholder="Förnamn" />
                 <input onChange={(e) => setLastName(e.target.value)} type="text" placeholder="Efternamn" />
                 <input onChange={(e) => setUsername(e.target.value)} type="text" placeholder="Användarnamn" />
@@ -101,15 +102,19 @@ function CreateAccount() {
 
                 <input onChange={(e) => setPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Lösenord" />
                 <input onChange={(e) => setConfirmedPassword(e.target.value)} type={showPsw ? "text" : "password"} placeholder="Upprepa löseord" />
-                <h5>{eventKey}</h5>
-                {guestOrAdmin && <button onClick={() => createKey()}>Ge mig en kod</button>}
+                {guestOrAdmin && <h5 className={styles.eventKey}>{eventKey}</h5>}
+                {guestOrAdmin && <h2 className={styles.codeBtn} onClick={() => createKey()}>Ge mig en kod</h2>}
 
-                <img onClick={() => setShowPsw(!showPsw)} src={showPsw ? hidePswImg : showPswImg} alt="" />
+                <article className={!guestOrAdmin ? styles.eye : styles.adminEye}>
+                    <img onClick={() => setShowPsw(!showPsw)} src={showPsw ? hidePswImg : showPswImg} alt="" />
+                </article>
 
-                {showBtn && <button onClick={() => createNewAccount(guestOrAdmin ? adminAccount : guestAccount)}>Skapa konto</button>}
+                {showBtn && <button className={!guestOrAdmin ? styles.createAccount : styles.createAccountAdmin} onClick={() => createNewAccount(guestOrAdmin ? adminAccount : guestAccount)}>Skapa konto</button>}
 
-                {confirmed.usernameExists && <h3>Användarnamnet finns redan</h3>}
-                {confirmed.emailExists && !confirmed.usernameExists ? <h3>Denna Email används redan</h3> : null}
+                <section className={!guestOrAdmin ? styles.exists : styles.existsAdmin}>
+                    {confirmed.usernameExists && <h3>Användarnamnet finns redan</h3>}
+                    {confirmed.emailExists && !confirmed.usernameExists ? <h3>Denna Email används redan</h3> : null}
+                </section>
 
             </article>
             {confirmed.success ? <CreatedAccountModal admin={guestOrAdmin} data={guestOrAdmin ? adminAccount : guestAccount} /> : null}
