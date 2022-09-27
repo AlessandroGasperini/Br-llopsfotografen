@@ -6,12 +6,14 @@ const router = express.Router()
 router.post('/', async (request, response) => {
     const emailData = request.body
 
+    // Email info
     const from = emailData.from
     const to = emailData.to
     const subject = emailData.subject
     const message = emailData.message
     const attachments = emailData.attachments
 
+    // email som skickas ifrån
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {

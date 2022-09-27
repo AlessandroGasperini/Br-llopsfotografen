@@ -23,6 +23,7 @@ router.post('/', async (request, response) => {
 router.post('/userGallery', async (request, response) => {
     const credentials = request.body;
 
+    // Om admin hämta alla bilder kopplade till eventet
     if (credentials.admin) {
 
         const getAllPictures = await picturesDB.find({
@@ -31,8 +32,8 @@ router.post('/userGallery', async (request, response) => {
 
         response.send(getAllPictures)
 
+        // Om guest hämta enbart deras bilder
     } else if (!credentials.admin) {
-
         const getPictures = await picturesDB.find({
             user: credentials.user,
             eventKey: credentials.eventKey
@@ -46,7 +47,6 @@ router.post('/userGallery', async (request, response) => {
 // Tar bort en bild
 router.delete('/', async (request, response) => {
     const credentials = request.body;
-    console.log(credentials);
 
     const removePic = await picturesDB.remove({
         _id: credentials.picture
@@ -66,7 +66,7 @@ router.delete('/', async (request, response) => {
 });
 
 
-
+// Tar bort alla bilder från ett event efter att de skickats på mail
 router.delete('/eventGallery', async (request, response) => {
     const credentials = request.body;
 

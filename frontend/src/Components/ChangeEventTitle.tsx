@@ -7,8 +7,8 @@ function ChangeEventTitle(props: EventModal) {
     const [changedTittle, setChangedTitle] = useState<string>("")
 
     async function changeTitle() {
-        props.setTitle(changedTittle)
-        props.setModal(false)
+        props.setTitle(changedTittle) // byter titel på sidan
+        props.setModal(false) // Stänger modal
 
         let eventInfo: EventInfo = {
             title: props.eventTitle,

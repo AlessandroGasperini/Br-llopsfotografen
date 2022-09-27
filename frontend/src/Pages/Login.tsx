@@ -11,8 +11,7 @@ import { LoginInterface, EventData } from "../typesAndInterfaces/interfaces"
 function Login() {
     const navigate = useNavigate()
 
-    const [eventData, setEventData] = useState<EventData | any>(false) // any????????? inte satt än
-
+    const [eventData, setEventData] = useState<EventData | any>(false) // // Any pga inte satt än :(
 
     const [showPsw, setShowPsw] = useState<boolean>(false)
     const [username, setUsername] = useState<string>("")
@@ -25,8 +24,7 @@ function Login() {
         eventKey: eventKey
     }
 
-
-
+    // Logga in och kolla så allt stämmer
     async function login(logIn: LoginInterface): Promise<void> {
         const response = await fetch('http://localhost:2500/login/getUser/', {
             method: 'POST',
@@ -39,11 +37,11 @@ function Login() {
         const data: EventData = await response.json();
         setEventData(data)
 
+        // Kolla om det är en gäst eller admin som liggar in
         if (data.success && data.eventKeySuccess && !data.admin) {
             navigate("/Guest", { state: { data, eventKey, username } })
         } else if (data.success && data.eventKeySuccess && data.admin) {
             navigate("/Admin", { state: { data, eventKey, username } })
-
         }
     }
 

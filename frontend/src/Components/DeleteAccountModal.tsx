@@ -25,7 +25,6 @@ function DeleteAccountModal(props: DeleteAccount) {
         getEmails()
     }, [])
 
-    let message: string = "Inga bilder togs på eventet"
     let allPics: any = [];
     let picsToSend: object[] = [];
 
@@ -33,14 +32,14 @@ function DeleteAccountModal(props: DeleteAccount) {
         adminPictures()
     }
 
+    // Lägger in alla bilder i en lista
     async function adminPictures(): Promise<void> {
         props.pictures.map((picture, id) => (
             !allPics.includes(picture.takenPicture) ? allPics.push(picture.takenPicture) : null
         ))
-
-        message = props.pictures[0].takenPicture
     }
 
+    // Sätter attachment på varje bild
     allPics.forEach((picture: string, id: number) => {
 
         let onePicture = {
@@ -56,18 +55,16 @@ function DeleteAccountModal(props: DeleteAccount) {
         adminPictures()
     }
 
-    console.log("allPics", allPics);
-    console.log("piccylist", picsToSend);
-
 
     const email: Email = {
         from: "phyllographen@gmail.com",
         to: userInfo.data.email,
         subject: "Gästlista & " + "GALLERI FRÅN " + userInfo.data.eventTitle,
-        message: "Gästlista " + emilList,  // skickar bara en bild atm
+        message: "Gästlista " + emilList,
         attachments: picsToSend
     }
 
+    // Skickar mail med gästlistan + alla bilder som tagits på eventet
     async function getEmails(): Promise<void> {
 
         let eventKey: EventKey = {
@@ -82,16 +79,14 @@ function DeleteAccountModal(props: DeleteAccount) {
         })
         const data = await response.json();
 
-        await data.map((email: Email | any, id: number) => ( // Vrf jiddrar den?? 
+        // Samma email kan inte läggas in två gånger
+        await data.map((email: Email | any, id: number) => ( // Osäker vrf any behövs
             !allEmails.includes(email.email) ? allEmails.push(email.email) : null
         ))
         setEmailList(allEmails.join(', '))
     }
 
-
-
-
-
+    // Skickar email
     async function sendEmail(): Promise<void> {
         const response = await fetch('http://localhost:2500/sendEmail', {
             method: 'POST',
@@ -107,6 +102,7 @@ function DeleteAccountModal(props: DeleteAccount) {
         eventKey: userInfo.eventKey
     }
 
+    // Raderar alla bilder efter
     async function deleteEventPictures() {
         const response = await fetch('http://localhost:2500/deleteEventPictures/eventGallery/', {
             method: 'DELETE',
@@ -117,6 +113,7 @@ function DeleteAccountModal(props: DeleteAccount) {
         })
     }
 
+    // Raderar konto
     async function deleteAccount() {
         deleteEventPictures()
         navigate("/")

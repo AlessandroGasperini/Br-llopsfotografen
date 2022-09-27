@@ -45,12 +45,35 @@ function AdminPage() {
     localStorage.setItem("allPictures", JSON.stringify(allPictures)); // jaha nudå?? behöver inte använda denna
 
 
+    useEffect(() => {
+        getPictures()
+    }, [])
+
+    // Logga ut knappen tas bort vid fullPage picture
+    useEffect(() => {
+        if (allPictures.length == 0) {
+            setFullPage(false)
+        }
+    })
+    
+    useEffect(() => {
+        if (pictureSlide === allPictures.length) {
+            setPictureSlide(0)
+        }
+    }, [pictureSlide])
+
+    if (pictureSlide === -1) {
+        setPictureSlide(allPictures.length - 1)
+    }
+
+
+
     function closeCamera(): void {
         setOpenCloseCam(false)
         window.location.reload() // för att kameran ska stängas av helt på
     }
 
-
+    // Öppna kamera
     function getCamera(): void {
         navigator.mediaDevices.getUserMedia({
             video: { width: 500, height: 500 }
@@ -78,13 +101,8 @@ function AdminPage() {
         setCloseCam(true)
     }
 
-    // if (!openCloseCam) { BEHÖVS INTE
-    //     getCamera()
-    // }
 
-    console.log(hasPhoto);
-
-
+    // Ta bild
     function takePic(): void {
         const width = 300
         const height = 300
@@ -106,7 +124,7 @@ function AdminPage() {
 
 
 
-
+    // Lägg till bild
     async function addPicture(): Promise<void> {
         let picture: AddPicture = {
             takenPicture: takenPicture,
@@ -129,7 +147,7 @@ function AdminPage() {
     }
 
 
-
+    // Hämta alla bilder
     async function getPictures(): Promise<void> {
 
         let user: UserData = {
@@ -150,38 +168,18 @@ function AdminPage() {
         setAllPictures(data)
     }
 
-    useEffect(() => {
-        getPictures()
-    }, [])
 
-    // så logga ut inte försvinner
-    useEffect(() => {
-        if (allPictures.length == 0) {
-            setFullPage(false)
-        }
-    })
-
-
+    // Visar en bild på storskärm
     function selectPic(id: number): void {
         setPictureSlide(id)
         setFullPage(true)
-    }
-
-    useEffect(() => {
-        if (pictureSlide === allPictures.length) {
-            setPictureSlide(0)
-        }
-    }, [pictureSlide])
-
-    if (pictureSlide === -1) {
-        setPictureSlide(allPictures.length - 1)
     }
 
 
     async function isLoggedIn(): Promise<void> {
         //hitta fram vår session storage - ta token därifrån
         const token: string = location.state.data.token
-        localStorage.setItem("token", JSON.stringify(token)); // jaha nudå?? behöver inte använda denna
+        localStorage.setItem("token", JSON.stringify(token)); // Bara för att :)
         const response = await fetch('http://localhost:2500/loggedin', {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -192,11 +190,12 @@ function AdminPage() {
         if (data.loggedIn == false) {
             localStorage.clear(); // Rensar allt som sparats
             navigate("/")
-            window.location.reload() // Gör så att kameran även stängs av
+            window.location.reload() // Gör så att kameran även stängs av helt!!
         }
     }
     isLoggedIn()
 
+    //Rensar localStorage vid utlogg
     function logOut(): void {
         localStorage.clear();
         navigate("/")
@@ -214,16 +213,12 @@ function AdminPage() {
                 <img onClick={closeCam ? () => closeCamera() : () => getCamera()} src={closeCam ? cameraOpen : cameraClosed} alt="" />
             </header>
 
-
-
             {
                 !hasPhoto && closeCam ? <section className="camera">
                     <video ref={videoRef} ></video>
                     {closeCam && <button className={styles.takePictureBtn} onClick={() => takePic()}>SNAP</button>}
                 </section> : null
             }
-
-
 
             <section className={"result" + (hasPhoto ? "hasPhoto" : "")}>
                 <canvas ref={photoRef} ></canvas>

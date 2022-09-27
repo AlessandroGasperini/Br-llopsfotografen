@@ -8,7 +8,7 @@ function CreatedAccountModal(props: NewAccount) {
 
     const info = props.data
     const admin = props.admin
-
+    // Skickar email md eventkod till ADMIN som skapat kontot
     const email: Email = {
         from: "phyllographen@gmail.com",
         to: info.email,

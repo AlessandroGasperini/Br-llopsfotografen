@@ -34,7 +34,7 @@ router.post('/', async (request, response) => {
         eventKeyExists: false
     };
 
-    //kolla igenom db om namn eller email redan finns reggat
+    //kolla igenom accountDB och se om användaren redan finns?
     const usernameExists = await accountsDB.find({
         username: credentials.username
     });
@@ -55,6 +55,7 @@ router.post('/', async (request, response) => {
     if (resObj.usernameExists || resObj.emailExists) {
         resObj.success = false;
     } else {
+        //hasha lösen
         const hashedPassword = await bcryptFunctions.hashPassword(credentials.password);
         credentials.password = hashedPassword;
         accountsDB.insert(credentials);
@@ -65,22 +66,18 @@ router.post('/', async (request, response) => {
                 username: credentials.username,
                 eventKey: credentials.eventKey
             }
-
             eventDB.insert(event);
         }
     }
-
+    // se om eventkoden redan finns (generera en ny (uppskjutet))
     if (eventKey.length > 0) {
         resObj.eventKeyExists = true
     }
-
-
-
     response.json(resObj);
 });
 
 
-
+// Logga in 
 router.post('/getUser', async (request, response) => {
     const credentials = request.body;
     const resObj = {
@@ -108,10 +105,7 @@ router.post('/getUser', async (request, response) => {
     });
 
 
-
-
-
-
+    // Lägg till användaren i eventvisitors. Om man redan har varit inloggad struta i det
     if (findEvent.length > 0) {
         const event = findEvent[0]
         const keyInput = credentials.eventKey
@@ -143,10 +137,10 @@ router.post('/getUser', async (request, response) => {
         const correctPassword = await bcryptFunctions.comparePassword(credentials.password, account[0].password);
         if (correctPassword) {
             resObj.success = true;
-
+            // kryptera en token
             const token = jwt.sign({
                 username: account[0].username
-            }, "goodgood", { //vår token blir krypterad med användarens användarnamn som kopplar vår token till användaren
+            }, "goodgood", { //vår token blir krypterad med användarens användarnamn som kopplar vår token till användaren (goodgood)
                 expiresIn: 600
             });
             resObj.token = token;
@@ -176,7 +170,7 @@ router.get('/', async (request, response) => {
     response.json(resObj);
 });
 
-
+//Radera användaren, eventvisitors och eventet
 router.delete('/', async (request, response) => {
     let credentials = request.body
 
@@ -204,10 +198,9 @@ function deleteEvent(user) {
     });
 }
 
-
+// Byt ut titelNamn
 router.put('/', async (request, response) => {
     let credentials = request.body
-    console.log(credentials);
     const eventKey = await eventDB.findOne({
         title: credentials.title
     });
@@ -229,10 +222,9 @@ router.put('/', async (request, response) => {
     })
 });
 
-
+// Hämta allas email som deltagit i eventet (använt koden)
 router.post('/getEmails', async (request, response) => {
     let credentials = request.body
-    console.log(credentials);
 
     const eventKey = await eventVisitors.find({
         eventKey: credentials.eventKey

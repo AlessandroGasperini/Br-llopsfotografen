@@ -3,7 +3,6 @@ import { Email, InviteGuest } from "../typesAndInterfaces/interfaces"
 import styles from "./InviteGuestModal.module.css"
 
 function InviteGuestModal(props: InviteGuest) {
-    console.log(props);
 
     const [emailInfo, setEmailInfo] = useState<string>("")
 
@@ -16,6 +15,7 @@ function InviteGuestModal(props: InviteGuest) {
         message: "Ladda ner Phyllographen, skapa gästkonto och använd eventkoden. EVENTKOD: " + props.userInfo.eventKey
     }
 
+    // Skicakar inbjudningsmail till gäster
     async function sendEmail(): Promise<void> {
 
         await props.setInvite(false)

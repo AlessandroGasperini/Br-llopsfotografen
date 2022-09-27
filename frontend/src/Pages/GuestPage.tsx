@@ -30,12 +30,36 @@ function GuestPage() {
     const [allPictures, setAllPictures] = useState<AllPictures[]>([])
     localStorage.setItem("allPictures", JSON.stringify(allPictures));
 
+
+    // Logga ut knappen tas bort vid fullPage picture
+    useEffect(() => {
+        if (allPictures.length == 0) {
+            setFullPage(false)
+        }
+    })
+
+    useEffect(() => {
+        getPictures()
+    }, [])
+
+
+    useEffect(() => {
+        if (pictureSlide === allPictures.length) {
+            setPictureSlide(0)
+        }
+    }, [pictureSlide])
+
+    if (pictureSlide === -1) {
+        setPictureSlide(allPictures.length - 1)
+    }
+
+
     function closeCamera(): void {
         setOpenCloseCam(false)
         window.location.reload()
     }
 
-
+    // Öppna kameran
     function getCamera(): void {
         navigator.mediaDevices.getUserMedia({
             video: { width: 500, height: 500 }
@@ -63,10 +87,7 @@ function GuestPage() {
         setCloseCam(true)
     }
 
-    // if (!openCloseCam) {
-    //     getCamera()
-    // }
-
+    // Ta bild
     function takePic(): void {
         const width = 300
         const height = 300
@@ -85,6 +106,7 @@ function GuestPage() {
         setTakenPicture(jpgURL)
     }
 
+    // Lägger till bilder
     async function addPicture(): Promise<void> {
         let picture: AddPicture = {
             takenPicture: takenPicture,
@@ -106,14 +128,7 @@ function GuestPage() {
         getCamera()
     }
 
-    // så logga ut inte försvinner
-    useEffect(() => {
-        if (allPictures.length == 0) {
-            setFullPage(false)
-        }
-    })
-
-
+    // Hämtar guests takna bilder på detta event
     async function getPictures(): Promise<void> {
 
         let user: UserData = {
@@ -134,25 +149,11 @@ function GuestPage() {
         setAllPictures(data)
     }
 
-    useEffect(() => {
-        getPictures()
-    }, [])
 
-
+    // Visar en bild på storskärm
     function selectPic(id: number): void {
         setPictureSlide(id)
         setFullPage(true)
-    }
-
-
-    useEffect(() => {
-        if (pictureSlide === allPictures.length) {
-            setPictureSlide(0)
-        }
-    }, [pictureSlide])
-
-    if (pictureSlide === -1) {
-        setPictureSlide(allPictures.length - 1)
     }
 
 

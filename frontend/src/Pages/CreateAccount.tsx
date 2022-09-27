@@ -40,7 +40,7 @@ function CreateAccount() {
         password: password,
     }
 
-
+    // Skapa konto
     async function createNewAccount(account: InputNewAccount): Promise<void> {
         const response = await fetch('http://localhost:2500/signup', {
             method: 'POST',
@@ -53,16 +53,14 @@ function CreateAccount() {
         setConfirmed(data)
     }
 
-
+    // Ger admin eventKod
     function createKey(): void {
         setEventKey(Math.floor(Math.random() * 90000) + 10000)
 
     }
 
 
-
-
-
+    // Alla fält måste vara ifyllda för att skapa konto + admin måste hämta en eventKod
     useEffect(() => {
         if (firstName !== "" && lastName !== "" && username !== "" && email !== "" && password !== "" && password === confirmPassword) {
             if (!guestOrAdmin) {
@@ -82,7 +80,6 @@ function CreateAccount() {
             setShowBtn(false)
         }
     })
-
 
 
     return (
